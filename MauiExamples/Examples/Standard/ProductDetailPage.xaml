@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.Examples.Standard.ProductDetailPage"
+             Title="Product Details">
+    
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Image x:Name="ProductImage"
+                   WidthRequest="200"
+                   HeightRequest="200"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center" />
+            
+            <Label x:Name="NameLabel"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+            
+            <Frame BorderColor="LightGray" Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="15">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="Price:"
+                               FontAttributes="Bold"
+                               WidthRequest="100" />
+                        <Label x:Name="PriceLabel" />
+                    </HorizontalStackLayout>
+                    
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="In Stock:"
+                               FontAttributes="Bold"
+                               WidthRequest="100" />
+                        <Label x:Name="StockLabel" />
+                    </HorizontalStackLayout>
+                    
+                    <Label Text="Description:"
+                           FontAttributes="Bold" />
+                    <Label x:Name="DescriptionLabel"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </Frame>
+            
+            <Button x:Name="BackButton"
+                    Text="Back to Products"
+                    Clicked="OnBackButtonClicked"
+                    HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

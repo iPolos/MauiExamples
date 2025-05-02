@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.Examples.Standard.ProductsPage"
+             Title="Products">
+    
+    <Grid RowDefinitions="Auto,*" Padding="20">
+        <Label Text="Product Catalog" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20" />
+        
+        <CollectionView Grid.Row="1" x:Name="ProductsCollectionView" SelectionMode="Single" SelectionChanged="OnProductSelected">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="10" ColumnDefinitions="Auto,*">
+                        <Image Grid.Column="0" 
+                               Source="{Binding ImageUrl}" 
+                               WidthRequest="60" 
+                               HeightRequest="60"
+                               Aspect="AspectFit"
+                               VerticalOptions="Center" />
+                        
+                        <VerticalStackLayout Grid.Column="1" Padding="15,0,0,0" VerticalOptions="Center">
+                            <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                            <Label Text="{Binding Price, StringFormat='${0:F2}'}" FontSize="16" TextColor="{AppThemeBinding Light=DarkSlateGray, Dark=LightGray}" />
+                            <Label Text="{Binding InStock, StringFormat='In Stock: {0}'}" FontSize="14" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage> 

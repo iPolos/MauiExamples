@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:MauiExamples.Examples.VanillaMvvm.ViewModels"
+             x:Class="MauiExamples.Examples.VanillaMvvm.Views.ProductDetailPage"
+             Title="{Binding Title}">
+    
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Image Source="{Binding ImageUrl}"
+                   WidthRequest="200"
+                   HeightRequest="200"
+                   Aspect="AspectFit"
+                   HorizontalOptions="Center" />
+            
+            <Label Text="{Binding Name}"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+            
+            <Frame BorderColor="LightGray" Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="15">
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="Price:"
+                               FontAttributes="Bold"
+                               WidthRequest="100" />
+                        <Label Text="{Binding FormattedPrice}" />
+                    </HorizontalStackLayout>
+                    
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="In Stock:"
+                               FontAttributes="Bold"
+                               WidthRequest="100" />
+                        <Label Text="{Binding StockStatus}" />
+                    </HorizontalStackLayout>
+                    
+                    <Label Text="Description:"
+                           FontAttributes="Bold" />
+                    <Label Text="{Binding Description}"
+                           LineBreakMode="WordWrap" />
+                </VerticalStackLayout>
+            </Frame>
+            
+            <Button Text="Back to Products"
+                    Command="{Binding GoBackCommand}"
+                    HorizontalOptions="Center" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

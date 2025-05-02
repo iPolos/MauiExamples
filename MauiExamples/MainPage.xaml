@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.MainPage">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="25">
+            <Image
+                Source="dotnet_bot.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                SemanticProperties.Description="The .NET Bot" />
+
+            <Label
+                Text="MVVM Examples"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="Different implementations of MVVM in .NET MAUI"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2" />
+
+            <Button
+                x:Name="StandardButton"
+                Text="Standard XAML with Code-Behind" 
+                Clicked="OnStandardButtonClicked"
+                HorizontalOptions="Fill" />
+                
+            <Button
+                x:Name="VanillaMvvmButton"
+                Text="Vanilla MVVM Implementation" 
+                Clicked="OnVanillaMvvmButtonClicked"
+                HorizontalOptions="Fill" />
+                
+            <Button
+                x:Name="MvvmToolkitButton"
+                Text="MVVM Toolkit Implementation" 
+                Clicked="OnMvvmToolkitButtonClicked"
+                HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

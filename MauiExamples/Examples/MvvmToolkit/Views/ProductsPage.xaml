@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:viewmodels="clr-namespace:MauiExamples.Examples.MvvmToolkit.ViewModels"
+             x:Class="MauiExamples.Examples.MvvmToolkit.Views.ProductsPage"
+             Title="{Binding Title}">
+
+    <ContentPage.Behaviors>
+        <toolkit:EventToCommandBehavior EventName="Appearing" Command="{Binding LoadProductsCommand}" />
+    </ContentPage.Behaviors>
+
+    <Grid RowDefinitions="Auto,*" Padding="20">
+        <Label Text="Product Catalog (MVVM Toolkit)" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20" />
+        
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadProductsCommand}">
+            <CollectionView ItemsSource="{Binding Products}" 
+                            SelectedItem="{Binding SelectedProduct}"
+                            SelectionMode="Single">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="10" ColumnDefinitions="Auto,*">
+                            <Image Grid.Column="0" 
+                                   Source="{Binding ImageUrl}" 
+                                   WidthRequest="60" 
+                                   HeightRequest="60"
+                                   Aspect="AspectFit"
+                                   VerticalOptions="Center" />
+                            
+                            <VerticalStackLayout Grid.Column="1" Padding="15,0,0,0" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
+                                <Label Text="{Binding Price, StringFormat='${0:F2}'}" FontSize="16" TextColor="{AppThemeBinding Light=DarkSlateGray, Dark=LightGray}" />
+                                <Label Text="{Binding InStock, StringFormat='In Stock: {0}'}" FontSize="14" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </RefreshView>
+        
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center" />
+    </Grid>
+</ContentPage> 
