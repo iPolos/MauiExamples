@@ -26,6 +26,9 @@ public partial class ProductsViewModel : ObservableObject
     public ProductsViewModel(ProductService productService)
     {
         _productService = productService;
+        
+        // Load products immediately
+        LoadProducts();
     }
 
     [RelayCommand]

@@ -43,6 +43,9 @@ public class ProductsViewModel : BaseViewModel
         
         LoadProductsCommand = new Command(LoadProducts);
         SelectProductCommand = new Command<Product>(SelectProduct);
+        
+        // Load products immediately when ViewModel is created
+        LoadProducts();
     }
 
     private void LoadProducts()
