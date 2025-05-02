@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using MauiExamples.Models;
 using MauiExamples.Services;
 
@@ -5,12 +6,14 @@ namespace MauiExamples.Examples.Standard;
 
 public partial class ProductsPage : ContentPage
 {
-    private readonly ProductService _productService;
+    private readonly IProductService _productService;
+    private readonly IServiceProvider _serviceProvider;
     
-    public ProductsPage(ProductService productService)
+    public ProductsPage(IProductService productService, IServiceProvider serviceProvider)
     {
         InitializeComponent();
         _productService = productService;
+        _serviceProvider = serviceProvider;
         
         // Load products when page appears
         Loaded += OnPageLoaded;
@@ -29,7 +32,9 @@ public partial class ProductsPage : ContentPage
             ProductsCollectionView.SelectedItem = null;
             
             // Navigate to product details page
-            await Navigation.PushAsync(new ProductDetailPage(selectedProduct));
+            // For standard implementation, we don't use DI for the detail page
+            // since it's a simple pass-through of data
+            await Shell.Current.Navigation.PushAsync(new ProductDetailPage(selectedProduct));
         }
     }
 } 

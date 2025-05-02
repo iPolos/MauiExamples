@@ -3,12 +3,14 @@ using System.Windows.Input;
 using MauiExamples.Examples.VanillaMvvm.Views;
 using MauiExamples.Models;
 using MauiExamples.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MauiExamples.Examples.VanillaMvvm.ViewModels;
 
 public class ProductsViewModel : BaseViewModel
 {
-    private readonly ProductService _productService;
+    private readonly IProductService _productService;
+    private readonly IServiceProvider _serviceProvider;
     private ObservableCollection<Product> _products;
     private Product _selectedProduct;
 
@@ -35,9 +37,10 @@ public class ProductsViewModel : BaseViewModel
     public ICommand LoadProductsCommand { get; }
     public ICommand SelectProductCommand { get; }
 
-    public ProductsViewModel(ProductService productService)
+    public ProductsViewModel(IProductService productService, IServiceProvider serviceProvider)
     {
         _productService = productService;
+        _serviceProvider = serviceProvider;
         Title = "Products";
         Products = new ObservableCollection<Product>();
         
@@ -75,6 +78,8 @@ public class ProductsViewModel : BaseViewModel
         if (product == null)
             return;
 
-        await Shell.Current.Navigation.PushAsync(new ProductDetailPage(product));
+        // Use the factory method to create the detail page
+        var detailPage = ProductDetailPage.CreateWithProduct(_serviceProvider, product);
+        await Shell.Current.Navigation.PushAsync(detailPage);
     }
 } 

@@ -1,5 +1,4 @@
 using MauiExamples.Examples.VanillaMvvm.ViewModels;
-using MauiExamples.Services;
 
 namespace MauiExamples.Examples.VanillaMvvm.Views;
 
@@ -7,10 +6,10 @@ public partial class ProductsPage : ContentPage
 {
     private readonly ProductsViewModel _viewModel;
     
-    public ProductsPage(ProductService productService)
+    public ProductsPage(ProductsViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = new ProductsViewModel(productService);
+        _viewModel = viewModel;
         BindingContext = _viewModel;
         
         // Manually hook up appearing event as a fallback

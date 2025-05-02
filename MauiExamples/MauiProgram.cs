@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using MauiExamples.Services;
-using MauiExamples.Examples.Standard;
-using MauiExamples.Examples.VanillaMvvm.Views;
-using MauiExamples.Examples.MvvmToolkit.Views;
 using CommunityToolkit.Maui;
 
 namespace MauiExamples;
@@ -22,7 +19,21 @@ public static class MauiProgram
             });
 
         // Register services
+        // Default implementation
+        builder.Services.AddSingleton<IProductService, ProductService>();
+        
+        // Register the concrete types as well for direct injection when needed
+        builder.Services.AddSingleton<ApiProductService>();
         builder.Services.AddSingleton<ProductService>();
+
+        // Register ViewModels
+        // Vanilla MVVM ViewModels
+        builder.Services.AddTransient<MauiExamples.Examples.VanillaMvvm.ViewModels.ProductsViewModel>();
+        builder.Services.AddTransient<MauiExamples.Examples.VanillaMvvm.ViewModels.ProductDetailViewModel>();
+        
+        // MVVM Toolkit ViewModels
+        builder.Services.AddTransient<MauiExamples.Examples.MvvmToolkit.ViewModels.ProductsViewModel>();
+        builder.Services.AddTransient<MauiExamples.Examples.MvvmToolkit.ViewModels.ProductDetailViewModel>();
 
         // Register pages
         builder.Services.AddTransient<MainPage>();

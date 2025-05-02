@@ -2,7 +2,10 @@ using MauiExamples.Models;
 
 namespace MauiExamples.Services;
 
-public class ProductService
+/// <summary>
+/// Mock implementation of IProductService that provides sample product data
+/// </summary>
+public class ProductService : IProductService
 {
     private readonly List<Product> _products = new()
     {
@@ -53,11 +56,13 @@ public class ProductService
         }
     };
 
+    /// <inheritdoc />
     public List<Product> GetAllProducts()
     {
         return _products;
     }
 
+    /// <inheritdoc />
     public Product? GetProductById(int id)
     {
         return _products.FirstOrDefault(p => p.Id == id);

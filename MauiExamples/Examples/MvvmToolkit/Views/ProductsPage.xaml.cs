@@ -5,9 +5,9 @@ namespace MauiExamples.Examples.MvvmToolkit.Views;
 
 public partial class ProductsPage : ContentPage
 {
-    public ProductsPage(ProductService productService)
+    public ProductsPage(ProductsViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new ProductsViewModel(productService);
+        BindingContext = viewModel;
     }
 } 

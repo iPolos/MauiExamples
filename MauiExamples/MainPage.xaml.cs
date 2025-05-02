@@ -1,30 +1,33 @@
-﻿using MauiExamples.Examples.Standard;
+﻿using Microsoft.Extensions.DependencyInjection;
 using MauiExamples.Services;
 
 namespace MauiExamples;
 
 public partial class MainPage : ContentPage
 {
-    private readonly ProductService _productService;
+    private readonly IServiceProvider _serviceProvider;
 
-    public MainPage(ProductService productService)
+    public MainPage(IServiceProvider serviceProvider)
     {
         InitializeComponent();
-        _productService = productService;
+        _serviceProvider = serviceProvider;
     }
 
     private async void OnStandardButtonClicked(object sender, EventArgs e)
     {
-        await Shell.Current.Navigation.PushAsync(new Examples.Standard.ProductsPage(_productService));
+        var page = _serviceProvider.GetRequiredService<Examples.Standard.ProductsPage>();
+        await Shell.Current.Navigation.PushAsync(page);
     }
 
     private async void OnVanillaMvvmButtonClicked(object sender, EventArgs e)
     {
-        await Shell.Current.Navigation.PushAsync(new Examples.VanillaMvvm.Views.ProductsPage(_productService));
+        var page = _serviceProvider.GetRequiredService<Examples.VanillaMvvm.Views.ProductsPage>();
+        await Shell.Current.Navigation.PushAsync(page);
     }
 
     private async void OnMvvmToolkitButtonClicked(object sender, EventArgs e)
     {
-        await Shell.Current.Navigation.PushAsync(new Examples.MvvmToolkit.Views.ProductsPage(_productService));
+        var page = _serviceProvider.GetRequiredService<Examples.MvvmToolkit.Views.ProductsPage>();
+        await Shell.Current.Navigation.PushAsync(page);
     }
 }

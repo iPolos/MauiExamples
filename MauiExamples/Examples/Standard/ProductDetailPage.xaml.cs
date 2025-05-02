@@ -27,6 +27,6 @@ public partial class ProductDetailPage : ContentPage
 
     private async void OnBackButtonClicked(object sender, EventArgs e)
     {
-        await Navigation.PopAsync();
+        await Shell.Current.Navigation.PopAsync();
     }
 } 

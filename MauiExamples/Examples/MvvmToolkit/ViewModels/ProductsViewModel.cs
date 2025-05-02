@@ -4,12 +4,14 @@ using CommunityToolkit.Mvvm.Input;
 using MauiExamples.Examples.MvvmToolkit.Views;
 using MauiExamples.Models;
 using MauiExamples.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace MauiExamples.Examples.MvvmToolkit.ViewModels;
 
 public partial class ProductsViewModel : ObservableObject
 {
-    private readonly ProductService _productService;
+    private readonly IProductService _productService;
+    private readonly IServiceProvider _serviceProvider;
 
     [ObservableProperty]
     private string _title = "Products";
@@ -23,9 +25,10 @@ public partial class ProductsViewModel : ObservableObject
     [ObservableProperty]
     private Product _selectedProduct;
 
-    public ProductsViewModel(ProductService productService)
+    public ProductsViewModel(IProductService productService, IServiceProvider serviceProvider)
     {
         _productService = productService;
+        _serviceProvider = serviceProvider;
         
         // Load products immediately
         LoadProducts();
@@ -70,6 +73,8 @@ public partial class ProductsViewModel : ObservableObject
         if (product == null)
             return;
 
-        await Shell.Current.Navigation.PushAsync(new ProductDetailPage(product));
+        // Use the factory method to create the detail page
+        var detailPage = ProductDetailPage.CreateWithProduct(_serviceProvider, product);
+        await Shell.Current.Navigation.PushAsync(detailPage);
     }
 } 
