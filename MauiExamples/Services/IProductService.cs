@@ -20,4 +20,11 @@ public interface IProductService
     /// <param name="id">The product ID to look for</param>
     /// <returns>The product if found, otherwise null</returns>
     Product? GetProductById(int id);
+    
+    /// <summary>
+    /// Add a new product to the catalog
+    /// </summary>
+    /// <param name="product">The product to add</param>
+    /// <returns>The added product with its assigned ID</returns>
+    Product AddProduct(Product product);
 } 

@@ -37,4 +37,14 @@ public partial class ProductsPage : ContentPage
             await Shell.Current.Navigation.PushAsync(new ProductDetailPage(selectedProduct));
         }
     }
+
+    private async void OnAddClicked(object sender, EventArgs e)
+    {
+        var addProductPage = new AddProductPage(_productService);
+        
+        // When returning from the AddProductPage, reload the products
+        addProductPage.Disappearing += (s, args) => OnPageLoaded(s, args);
+        
+        await Shell.Current.Navigation.PushAsync(addProductPage);
+    }
 } 

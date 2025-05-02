@@ -4,6 +4,10 @@
              x:Class="MauiExamples.Examples.Standard.ProductsPage"
              Title="Products">
     
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+    
     <Grid RowDefinitions="Auto,*" Padding="20">
         <Label Text="Product Catalog" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20" />
         

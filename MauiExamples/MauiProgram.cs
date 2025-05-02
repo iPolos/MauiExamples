@@ -20,20 +20,21 @@ public static class MauiProgram
 
         // Register services
         // Default implementation
-        builder.Services.AddSingleton<IProductService, ProductService>();
+        builder.Services.AddSingleton<IProductService, ApiProductService>();
         
         // Register the concrete types as well for direct injection when needed
         builder.Services.AddSingleton<ApiProductService>();
-        builder.Services.AddSingleton<ProductService>();
 
         // Register ViewModels
         // Vanilla MVVM ViewModels
         builder.Services.AddTransient<MauiExamples.Examples.VanillaMvvm.ViewModels.ProductsViewModel>();
         builder.Services.AddTransient<MauiExamples.Examples.VanillaMvvm.ViewModels.ProductDetailViewModel>();
+        builder.Services.AddTransient<MauiExamples.Examples.VanillaMvvm.ViewModels.AddProductViewModel>();
         
         // MVVM Toolkit ViewModels
         builder.Services.AddTransient<MauiExamples.Examples.MvvmToolkit.ViewModels.ProductsViewModel>();
         builder.Services.AddTransient<MauiExamples.Examples.MvvmToolkit.ViewModels.ProductDetailViewModel>();
+        builder.Services.AddTransient<MauiExamples.Examples.MvvmToolkit.ViewModels.AddProductViewModel>();
 
         // Register pages
         builder.Services.AddTransient<MainPage>();
@@ -45,10 +46,12 @@ public static class MauiProgram
         // Vanilla MVVM Implementation
         builder.Services.AddTransient<Examples.VanillaMvvm.Views.ProductsPage>();
         builder.Services.AddTransient<Examples.VanillaMvvm.Views.ProductDetailPage>();
+        builder.Services.AddTransient<Examples.VanillaMvvm.Views.AddProductPage>();
         
         // MVVM Toolkit Implementation
         builder.Services.AddTransient<Examples.MvvmToolkit.Views.ProductsPage>();
         builder.Services.AddTransient<Examples.MvvmToolkit.Views.ProductDetailPage>();
+        builder.Services.AddTransient<Examples.MvvmToolkit.Views.AddProductPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

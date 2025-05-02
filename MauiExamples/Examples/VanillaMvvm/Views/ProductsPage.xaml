@@ -10,6 +10,10 @@
         <behaviors:EventToCommandBehavior EventName="Appearing" Command="{Binding LoadProductsCommand}" />
     </ContentPage.Behaviors>
     
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddProductCommand}" />
+    </ContentPage.ToolbarItems>
+    
     <Grid RowDefinitions="Auto,*" Padding="20">
         <Label Text="Product Catalog (MVVM)" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20" />
         

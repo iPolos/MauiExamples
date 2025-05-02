@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.Examples.Standard.AddProductPage"
+             Title="Add Product">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="20">
+            <Frame BorderColor="LightGray" Padding="15" CornerRadius="10">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Name:" FontAttributes="Bold" />
+                    <Entry x:Name="NameEntry" 
+                           Placeholder="Enter product name"
+                           TextChanged="OnEntryTextChanged" />
+
+                    <Label Text="Description:" FontAttributes="Bold" />
+                    <Editor x:Name="DescriptionEditor" 
+                            Placeholder="Enter product description"
+                            HeightRequest="100"
+                            TextChanged="OnEntryTextChanged" />
+
+                    <Label Text="Price:" FontAttributes="Bold" />
+                    <Entry x:Name="PriceEntry" 
+                           Keyboard="Numeric"
+                           Placeholder="Enter price"
+                           TextChanged="OnEntryTextChanged" />
+
+                    <Label Text="Image URL:" FontAttributes="Bold" />
+                    <Entry x:Name="ImageUrlEntry" 
+                           Text="dotnet_bot.png"
+                           Placeholder="Enter image URL" />
+
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="In Stock:" 
+                               FontAttributes="Bold"
+                               VerticalOptions="Center" />
+                        <Switch x:Name="InStockSwitch" 
+                                IsToggled="True"
+                                VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <HorizontalStackLayout Spacing="20" HorizontalOptions="Center">
+                <Button Text="Save" 
+                        x:Name="SaveButton"
+                        Clicked="OnSaveClicked"
+                        BackgroundColor="{StaticResource Primary}"
+                        TextColor="White"
+                        WidthRequest="120"
+                        IsEnabled="False" />
+                
+                <Button Text="Cancel" 
+                        Clicked="OnCancelClicked"
+                        BackgroundColor="Gray"
+                        TextColor="White"
+                        WidthRequest="120" />
+            </HorizontalStackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

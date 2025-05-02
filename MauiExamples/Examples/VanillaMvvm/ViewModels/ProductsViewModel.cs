@@ -36,6 +36,7 @@ public class ProductsViewModel : BaseViewModel
 
     public ICommand LoadProductsCommand { get; }
     public ICommand SelectProductCommand { get; }
+    public ICommand AddProductCommand { get; }
 
     public ProductsViewModel(IProductService productService, IServiceProvider serviceProvider)
     {
@@ -46,6 +47,7 @@ public class ProductsViewModel : BaseViewModel
         
         LoadProductsCommand = new Command(LoadProducts);
         SelectProductCommand = new Command<Product>(SelectProduct);
+        AddProductCommand = new Command(AddProduct);
         
         // Load products immediately when ViewModel is created
         LoadProducts();
@@ -81,5 +83,19 @@ public class ProductsViewModel : BaseViewModel
         // Use the factory method to create the detail page
         var detailPage = ProductDetailPage.CreateWithProduct(_serviceProvider, product);
         await Shell.Current.Navigation.PushAsync(detailPage);
+    }
+    
+    private async void AddProduct()
+    {
+        var viewModel = _serviceProvider.GetService<AddProductViewModel>();
+        if (viewModel != null)
+        {
+            var page = new AddProductPage(viewModel);
+            
+            // When returning from the AddProductPage, reload the products
+            page.Disappearing += (s, e) => LoadProducts();
+            
+            await Shell.Current.Navigation.PushAsync(page);
+        }
     }
 } 

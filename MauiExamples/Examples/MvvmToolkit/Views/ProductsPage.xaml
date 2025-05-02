@@ -6,6 +6,10 @@
              x:Class="MauiExamples.Examples.MvvmToolkit.Views.ProductsPage"
              Title="{Binding Title}">
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddProductCommand}" />
+    </ContentPage.ToolbarItems>
+
     <ContentPage.Behaviors>
         <toolkit:EventToCommandBehavior EventName="Appearing" Command="{Binding LoadProductsCommand}" />
     </ContentPage.Behaviors>

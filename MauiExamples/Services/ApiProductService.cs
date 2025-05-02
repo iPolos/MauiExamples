@@ -76,4 +76,23 @@ public class ApiProductService : IProductService
         Thread.Sleep(150); // Simulate network delay
         return _products.FirstOrDefault(p => p.Id == id);
     }
+    
+    /// <inheritdoc />
+    public Product AddProduct(Product product)
+    {
+        // In a real implementation, this would make an HTTP POST request
+        // Simulate network delay
+        Thread.Sleep(500);
+        
+        // Generate a new ID starting from 100 to differentiate from the other service
+        int newId = _products.Count > 0 ? _products.Max(p => p.Id) + 1 : 100;
+        
+        // Set the new ID
+        product.Id = newId;
+        
+        // Add to our collection
+        _products.Add(product);
+        
+        return product;
+    }
 } 

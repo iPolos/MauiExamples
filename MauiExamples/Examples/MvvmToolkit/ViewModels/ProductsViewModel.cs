@@ -77,4 +77,19 @@ public partial class ProductsViewModel : ObservableObject
         var detailPage = ProductDetailPage.CreateWithProduct(_serviceProvider, product);
         await Shell.Current.Navigation.PushAsync(detailPage);
     }
+
+    [RelayCommand]
+    private async Task AddProduct()
+    {
+        var viewModel = _serviceProvider.GetService<AddProductViewModel>();
+        if (viewModel != null)
+        {
+            var page = new AddProductPage(viewModel);
+            
+            // When returning from the AddProductPage, reload the products
+            page.Disappearing += (s, e) => LoadProducts();
+            
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+    }
 } 

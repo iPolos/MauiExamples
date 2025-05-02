@@ -67,4 +67,19 @@ public class ProductService : IProductService
     {
         return _products.FirstOrDefault(p => p.Id == id);
     }
+    
+    /// <inheritdoc />
+    public Product AddProduct(Product product)
+    {
+        // Generate a new ID (in a real app, this would be handled by the database)
+        int newId = _products.Count > 0 ? _products.Max(p => p.Id) + 1 : 1;
+        
+        // Set the new ID
+        product.Id = newId;
+        
+        // Add to our collection
+        _products.Add(product);
+        
+        return product;
+    }
 } 
