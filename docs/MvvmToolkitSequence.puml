@@ -1,0 +1,50 @@
+@startuml MVVM Toolkit Sequence Diagram
+
+actor User
+participant "ProductsPage\n(View)" as ProductsPage
+participant "ProductsViewModel" as ProductsViewModel
+participant "ProductDetailPage\n(View)" as ProductDetailPage
+participant "ProductDetailViewModel" as ProductDetailViewModel
+participant "IProductService" as ProductService
+
+== Loading Products ==
+User -> ProductsPage : Opens page
+activate ProductsPage
+ProductsPage -> ProductsViewModel : Initialize
+activate ProductsViewModel
+ProductsViewModel -> ProductsViewModel : LoadProductsCommand.Execute()
+ProductsViewModel -> ProductService : GetAllProducts()
+activate ProductService
+ProductService --> ProductsViewModel : returns List<Product>
+deactivate ProductService
+ProductsViewModel -> ProductsViewModel : Products = products collection\n(ObservableProperty attribute\ntriggers PropertyChanged)
+ProductsViewModel --> ProductsPage : PropertyChanged event
+deactivate ProductsViewModel
+ProductsPage --> User : Display products list
+deactivate ProductsPage
+
+== Selecting a Product ==
+User -> ProductsPage : Taps product item
+activate ProductsPage
+ProductsPage -> ProductsViewModel : GoToDetailsCommand.Execute(product)
+activate ProductsViewModel
+note right: RelayCommand attribute handles\ncommand implementation
+ProductsViewModel -> ProductsPage : Navigate to details page with productId
+deactivate ProductsViewModel
+ProductsPage -> ProductDetailPage : Navigate(productId)
+deactivate ProductsPage
+activate ProductDetailPage
+
+ProductDetailPage -> ProductDetailViewModel : Initialize(productId)
+activate ProductDetailViewModel
+ProductDetailViewModel -> ProductService : GetProductById(productId)
+activate ProductService
+ProductService --> ProductDetailViewModel : returns Product
+deactivate ProductService
+ProductDetailViewModel -> ProductDetailViewModel : CurrentProduct = product\n(ObservableProperty attribute\ntriggers PropertyChanged)
+ProductDetailViewModel --> ProductDetailPage : PropertyChanged event
+deactivate ProductDetailViewModel
+ProductDetailPage --> User : Show product details
+deactivate ProductDetailPage
+
+@enduml 

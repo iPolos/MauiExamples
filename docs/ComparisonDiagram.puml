@@ -1,0 +1,65 @@
+@startuml MVVM Implementations Comparison
+
+' Component diagram showing architectural differences between implementations
+
+package "Standard (Code-Behind)" {
+  [View] as StandardView
+  [Data Access] as StandardDataAccess
+  
+  StandardView ..> StandardDataAccess : direct access
+}
+
+package "Vanilla MVVM" {
+  [View] as VanillaView
+  [ViewModel] as VanillaViewModel
+  [Data Access] as VanillaDataAccess
+  
+  VanillaView ..> VanillaViewModel : data binding
+  VanillaView ..> VanillaViewModel : commands
+  VanillaViewModel ..> VanillaDataAccess : uses
+}
+
+package "MVVM Toolkit" {
+  [View] as ToolkitView
+  [ViewModel] as ToolkitViewModel
+  [Data Access] as ToolkitDataAccess
+  
+  ToolkitView ..> ToolkitViewModel : data binding
+  ToolkitView ..> ToolkitViewModel : commands
+  ToolkitViewModel ..> ToolkitDataAccess : uses
+  
+  note right of ToolkitViewModel
+    Uses Source Generators:
+    - [ObservableProperty]
+    - [RelayCommand]
+    - [INotifyPropertyChanged]
+  end note
+}
+
+' Add comparison note
+note "Comparison of Approaches" as N1
+N1 .. StandardView
+N1 .. VanillaView
+N1 .. ToolkitView
+
+note bottom of N1
+  **Standard**
+  - Direct code-behind
+  - UI and logic mixed
+  - Simple for small apps
+  - Hard to test
+  
+  **Vanilla MVVM**
+  - Custom implementation
+  - Manual property changed
+  - Manual command classes
+  - Better testability
+  
+  **MVVM Toolkit**
+  - Source generators
+  - Reduces boilerplate
+  - Type-safe bindings
+  - Best testability
+end note
+
+@enduml 

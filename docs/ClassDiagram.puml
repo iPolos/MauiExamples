@@ -1,0 +1,117 @@
+@startuml MAUI MVVM Project Class Diagram
+
+' Define model
+package "Models" {
+    class Product {
+        +int Id
+        +string Name
+        +string Description
+        +decimal Price
+        +string ImageUrl
+        +bool InStock
+    }
+}
+
+' Define services
+package "Services" {
+    interface IProductService {
+        +List<Product> GetAllProducts()
+        +Product? GetProductById(int id)
+        +Product AddProduct(Product product)
+    }
+    
+    class ProductService {
+        -List<Product> _products
+        +List<Product> GetAllProducts()
+        +Product? GetProductById(int id)
+        +Product AddProduct(Product product)
+    }
+    
+    class ApiProductService {
+        +List<Product> GetAllProducts()
+        +Product? GetProductById(int id)
+        +Product AddProduct(Product product)
+    }
+    
+    IProductService <|.. ProductService
+    IProductService <|.. ApiProductService
+}
+
+' Define MVVM structure for Vanilla implementation
+package "VanillaMVVM" {
+    class BaseViewModel {
+        #void SetProperty<T>(ref T storage, T value, string propertyName)
+        #void OnPropertyChanged(string propertyName)
+    }
+    
+    class ProductsViewModel {
+        -IProductService _productService
+        +ObservableCollection<Product> Products
+        +ICommand GoToDetailsCommand
+        +void LoadProducts()
+    }
+    
+    class ProductDetailViewModel {
+        -IProductService _productService
+        +Product CurrentProduct
+        +void LoadProduct(int id)
+    }
+    
+    class ProductsPage {
+    }
+    
+    class ProductDetailPage {
+    }
+    
+    BaseViewModel <|-- ProductsViewModel
+    BaseViewModel <|-- ProductDetailViewModel
+    ProductsViewModel --> ProductsPage : bound to
+    ProductDetailViewModel --> ProductDetailPage : bound to
+}
+
+' Define MVVM Toolkit structure
+package "MVVMToolkit" {
+    class ProductsViewModel {
+        -IProductService _productService
+        [ObservableProperty] ObservableCollection<Product> _products
+        [RelayCommand] void GoToDetails(Product product)
+        [RelayCommand] void LoadProducts()
+    }
+    
+    class ProductDetailViewModel {
+        -IProductService _productService
+        [ObservableProperty] Product _currentProduct
+        [RelayCommand] void LoadProduct(int id)
+    }
+    
+    class ProductsPage {
+    }
+    
+    class ProductDetailPage {
+    }
+    
+    ProductsViewModel --> ProductsPage : bound to
+    ProductDetailViewModel --> ProductDetailPage : bound to
+}
+
+' Define Standard structure
+package "Standard" {
+    class ProductsPage {
+        -IProductService _productService
+        -void LoadProducts()
+        -void OnItemTapped(object sender, EventArgs e)
+    }
+    
+    class ProductDetailPage {
+        -IProductService _productService
+        -void LoadProduct(int id)
+    }
+}
+
+' Relationships between services and viewmodels
+ProductsViewModel ..> IProductService : uses
+ProductDetailViewModel ..> IProductService : uses
+ProductsPage ..> IProductService : uses (Standard)
+ProductDetailPage ..> IProductService : uses (Standard)
+
+@enduml 

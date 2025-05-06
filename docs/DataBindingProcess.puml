@@ -1,0 +1,84 @@
+@startuml Data Binding in MVVM
+
+' Data binding flow in MVVM pattern
+title Data Binding Process in MVVM Pattern
+
+actor User
+boundary "View\n(XAML UI)" as View
+control "ViewModel" as ViewModel
+entity "Model" as Model
+database "Data Service" as Service
+
+== Initial Data Load ==
+
+ViewModel -> Service : Request data
+Service -> Model : Create/populate models
+Service --> ViewModel : Return model data
+ViewModel -> ViewModel : Set properties with data
+ViewModel --> View : Property changed events
+View --> User : Display updated UI
+
+== User Input ==
+
+User -> View : Interacts with UI element
+View -> ViewModel : Command executes or\nproperty updates
+ViewModel -> ViewModel : Process data
+ViewModel -> Service : Update data if needed
+ViewModel -> ViewModel : Update properties
+ViewModel --> View : Property changed events
+View --> User : Display updated UI
+
+== Data Binding Types ==
+
+note right of View
+  **Binding Types**
+  
+  OneTime:
+  - Source → Target (once)
+  - Examples: Static text, initial setup
+  
+  OneWay:
+  - Source → Target
+  - Updates when source changes
+  - Examples: Display values, status indicators
+  
+  TwoWay:
+  - Source ↔ Target
+  - Updates in both directions
+  - Examples: Form fields, user input
+  
+  OneWayToSource:
+  - Target → Source
+  - Examples: Special user input scenarios
+end note
+
+== Binding Events Flow ==
+
+box "MVVM Binding Mechanism" #LightBlue
+participant View
+participant "Binding Object" as Binding
+participant ViewModel
+end box
+
+View -> Binding : Create binding
+Binding -> ViewModel : Subscribe to PropertyChanged
+ViewModel -> ViewModel : Update property
+ViewModel -> Binding : Raise PropertyChanged
+Binding -> View : Update UI
+
+== Command Execution Flow ==
+
+box "MVVM Command Flow" #LightGreen
+participant View
+participant "Command Object" as Command
+participant ViewModel
+end box
+
+View -> Command : Execute
+Command -> Command : Check CanExecute
+Command -> ViewModel : Execute action
+ViewModel -> ViewModel : Process data
+ViewModel -> ViewModel : Update properties
+ViewModel -> View : PropertyChanged events
+
+@enduml 
