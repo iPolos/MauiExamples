@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MauiExamples.MainPage">
+             x:Class="MauiExamples.MainPage"
+             AutomationId="MainPage">
 
     <ScrollView>
         <VerticalStackLayout
@@ -11,35 +12,41 @@
                 Source="dotnet_bot.png"
                 HeightRequest="185"
                 Aspect="AspectFit"
-                SemanticProperties.Description="The .NET Bot" />
+                SemanticProperties.Description="The .NET Bot"
+                AutomationId="MainImage" />
 
             <Label
                 Text="MVVM Examples"
                 Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+                SemanticProperties.HeadingLevel="Level1"
+                AutomationId="PageTitle" />
 
             <Label
                 Text="Different implementations of MVVM in .NET MAUI"
                 Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2" />
+                SemanticProperties.HeadingLevel="Level2"
+                AutomationId="PageSubtitle" />
 
             <Button
                 x:Name="StandardButton"
                 Text="Standard XAML with Code-Behind" 
                 Clicked="OnStandardButtonClicked"
-                HorizontalOptions="Fill" />
+                HorizontalOptions="Fill"
+                AutomationId="StandardButton" />
                 
             <Button
                 x:Name="VanillaMvvmButton"
                 Text="Vanilla MVVM Implementation" 
                 Clicked="OnVanillaMvvmButtonClicked"
-                HorizontalOptions="Fill" />
+                HorizontalOptions="Fill"
+                AutomationId="VanillaMvvmButton" />
                 
             <Button
                 x:Name="MvvmToolkitButton"
                 Text="MVVM Toolkit Implementation" 
                 Clicked="OnMvvmToolkitButtonClicked"
-                HorizontalOptions="Fill" />
+                HorizontalOptions="Fill"
+                AutomationId="MvvmToolkitButton" />
         </VerticalStackLayout>
     </ScrollView>
 

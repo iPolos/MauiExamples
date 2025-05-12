@@ -4,10 +4,11 @@
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
              xmlns:viewmodels="clr-namespace:MauiExamples.Examples.MvvmToolkit.ViewModels"
              x:Class="MauiExamples.Examples.MvvmToolkit.Views.ProductsPage"
-             Title="{Binding Title}">
+             Title="{Binding Title}"
+             AutomationId="ProductsPageMvvmToolkit">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add" Command="{Binding AddProductCommand}" />
+        <ToolbarItem Text="Add" Command="{Binding AddProductCommand}" AutomationId="AddButton" />
     </ContentPage.ToolbarItems>
 
     <ContentPage.Behaviors>
@@ -15,12 +16,13 @@
     </ContentPage.Behaviors>
 
     <Grid RowDefinitions="Auto,*" Padding="20">
-        <Label Text="Product Catalog (MVVM Toolkit)" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20" />
+        <Label AutomationId="ListTitle" Text="Product Catalog (MVVM Toolkit)" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20" />
         
-        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadProductsCommand}">
+        <RefreshView Grid.Row="1" IsRefreshing="{Binding IsBusy}" Command="{Binding LoadProductsCommand}" AutomationId="RefreshView">
             <CollectionView ItemsSource="{Binding Products}" 
                             SelectedItem="{Binding SelectedProduct}"
-                            SelectionMode="Single">
+                            SelectionMode="Single"
+                            AutomationId="ProductsList">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Padding="10" ColumnDefinitions="Auto,*">
@@ -29,12 +31,13 @@
                                    WidthRequest="60" 
                                    HeightRequest="60"
                                    Aspect="AspectFit"
-                                   VerticalOptions="Center" />
+                                   VerticalOptions="Center"
+                                   AutomationId="ProductImage" />
                             
                             <VerticalStackLayout Grid.Column="1" Padding="15,0,0,0" VerticalOptions="Center">
-                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                                <Label Text="{Binding Price, StringFormat='${0:F2}'}" FontSize="16" TextColor="{AppThemeBinding Light=DarkSlateGray, Dark=LightGray}" />
-                                <Label Text="{Binding InStock, StringFormat='In Stock: {0}'}" FontSize="14" />
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" AutomationId="ProductName" />
+                                <Label Text="{Binding Price, StringFormat='${0:F2}'}" FontSize="16" TextColor="{AppThemeBinding Light=DarkSlateGray, Dark=LightGray}" AutomationId="ProductPrice" />
+                                <Label Text="{Binding InStock, StringFormat='In Stock: {0}'}" FontSize="14" AutomationId="ProductStock" />
                             </VerticalStackLayout>
                         </Grid>
                     </DataTemplate>
@@ -42,6 +45,6 @@
             </CollectionView>
         </RefreshView>
         
-        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center" />
+        <ActivityIndicator Grid.Row="1" IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" HorizontalOptions="Center" VerticalOptions="Center" AutomationId="LoadingIndicator" />
     </Grid>
 </ContentPage> 

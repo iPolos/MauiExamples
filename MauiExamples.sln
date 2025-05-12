@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiExamples", "MauiExample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiExamples.Tests", "MauiExamples.Tests\MauiExamples.Tests.csproj", "{44842685-AAE3-418F-BA80-A38FAC2A3E91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MauiExamples.UITests", "MauiExamples.UITests\MauiExamples.UITests.csproj", "{1BA19A9C-D722-4ECB-956D-896FA523AD2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{44842685-AAE3-418F-BA80-A38FAC2A3E91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44842685-AAE3-418F-BA80-A38FAC2A3E91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44842685-AAE3-418F-BA80-A38FAC2A3E91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BA19A9C-D722-4ECB-956D-896FA523AD2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BA19A9C-D722-4ECB-956D-896FA523AD2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BA19A9C-D722-4ECB-956D-896FA523AD2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BA19A9C-D722-4ECB-956D-896FA523AD2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
