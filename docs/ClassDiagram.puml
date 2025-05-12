@@ -48,6 +48,7 @@ package "VanillaMVVM" {
         -IProductService _productService
         +ObservableCollection<Product> Products
         +ICommand GoToDetailsCommand
+        +ICommand AddProductCommand
         +void LoadProducts()
     }
     
@@ -57,16 +58,29 @@ package "VanillaMVVM" {
         +void LoadProduct(int id)
     }
     
+    class AddProductViewModel {
+        -IProductService _productService
+        +Product NewProduct
+        +ICommand SaveProductCommand
+        +void Initialize()
+        +void SaveProduct()
+    }
+    
     class ProductsPage {
     }
     
     class ProductDetailPage {
     }
     
+    class AddProductPage {
+    }
+    
     BaseViewModel <|-- ProductsViewModel
     BaseViewModel <|-- ProductDetailViewModel
+    BaseViewModel <|-- AddProductViewModel
     ProductsViewModel --> ProductsPage : bound to
     ProductDetailViewModel --> ProductDetailPage : bound to
+    AddProductViewModel --> AddProductPage : bound to
 }
 
 ' Define MVVM Toolkit structure
@@ -75,6 +89,7 @@ package "MVVMToolkit" {
         -IProductService _productService
         [ObservableProperty] ObservableCollection<Product> _products
         [RelayCommand] void GoToDetails(Product product)
+        [RelayCommand] void AddProduct()
         [RelayCommand] void LoadProducts()
     }
     
@@ -84,14 +99,24 @@ package "MVVMToolkit" {
         [RelayCommand] void LoadProduct(int id)
     }
     
+    class AddProductViewModel {
+        -IProductService _productService
+        [ObservableProperty] Product _newProduct
+        [RelayCommand] Task SaveProduct()
+    }
+    
     class ProductsPage {
     }
     
     class ProductDetailPage {
     }
     
+    class AddProductPage {
+    }
+    
     ProductsViewModel --> ProductsPage : bound to
     ProductDetailViewModel --> ProductDetailPage : bound to
+    AddProductViewModel --> AddProductPage : bound to
 }
 
 ' Define Standard structure
@@ -100,18 +125,26 @@ package "Standard" {
         -IProductService _productService
         -void LoadProducts()
         -void OnItemTapped(object sender, EventArgs e)
+        -void OnAddProductClicked(object sender, EventArgs e)
     }
     
     class ProductDetailPage {
         -IProductService _productService
         -void LoadProduct(int id)
     }
+    
+    class AddProductPage {
+        -IProductService _productService
+        -void SaveProduct()
+    }
 }
 
 ' Relationships between services and viewmodels
 ProductsViewModel ..> IProductService : uses
 ProductDetailViewModel ..> IProductService : uses
+AddProductViewModel ..> IProductService : uses
 ProductsPage ..> IProductService : uses (Standard)
 ProductDetailPage ..> IProductService : uses (Standard)
+AddProductPage ..> IProductService : uses (Standard)
 
-@enduml 
+@enduml

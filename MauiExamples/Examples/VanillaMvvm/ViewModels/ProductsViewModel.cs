@@ -53,7 +53,7 @@ public class ProductsViewModel : BaseViewModel
         LoadProducts();
     }
 
-    private void LoadProducts()
+    public void LoadProducts()
     {
         if (IsBusy)
             return;

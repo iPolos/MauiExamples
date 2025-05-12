@@ -11,7 +11,10 @@
     <Grid RowDefinitions="Auto,*" Padding="20">
         <Label Text="Product Catalog" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" Margin="0,0,0,20" />
         
-        <CollectionView Grid.Row="1" x:Name="ProductsCollectionView" SelectionMode="Single" SelectionChanged="OnProductSelected">
+        <CollectionView Grid.Row="1" 
+                        x:Name="ProductsCollectionView" 
+                        SelectionMode="Single"
+                        SelectionChanged="OnProductSelected">
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="10" ColumnDefinitions="Auto,*">

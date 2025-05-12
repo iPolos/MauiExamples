@@ -1,0 +1,63 @@
+@startuml
+skinparam packageStyle rectangle
+skinparam backgroundColor white
+skinparam handwritten false
+
+title MAUI Examples Project Structure
+
+package "MauiExamples" {
+    [MauiExamples.sln]
+    [README.md]
+    
+    package "MauiExamples.Core" {
+        package "Examples" {
+            package "MvvmToolkit" {
+                package "ViewModels" {
+                    [MvvmToolkit ViewModels]
+                }
+            }
+            
+            package "VanillaMvvm" {
+                package "ViewModels" {
+                    [VanillaMvvm ViewModels]
+                }
+            }
+        }
+        
+        package "Models" {
+            [Data models]
+        }
+        
+        package "Services" {
+            [Service implementations]
+        }
+    }
+    
+    package "docs" {
+        [Documentation]
+    }
+}
+
+note right of "MvvmToolkit"
+  Implementation using
+  CommunityToolkit.Mvvm
+end note
+
+note right of "VanillaMvvm"
+  Custom MVVM
+  implementation
+end note
+
+note right of "Models"
+  Shared data models
+  used across both
+  implementations
+end note
+
+note right of "Services"
+  Shared services
+  used across both
+  implementations
+end note
+
+@enduml

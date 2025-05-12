@@ -1,0 +1,228 @@
+@startuml StudentSlides
+
+!define RECTANGLE class
+
+' Slide 1: Title
+newpage
+title "MAUI MVVM Project Structure\nUnderstanding Different MVVM Implementations"
+
+' Slide 2: What is MVVM?
+newpage
+title "What is MVVM?"
+skinparam backgroundColor white
+skinparam handwritten false
+
+RECTANGLE "Model" as Model {
+    + Business Logic
+    + Data
+    + Validation
+}
+
+RECTANGLE "View" as View {
+    + UI Elements
+    + User Interaction
+    + XAML
+}
+
+RECTANGLE "ViewModel" as ViewModel {
+    + Commands
+    + Properties
+    + Data Binding
+}
+
+Model --> ViewModel : Updates
+ViewModel --> View : Data Binding
+View --> ViewModel : Commands
+
+note right of Model
+  Contains the data and
+  business logic of the
+  application
+end note
+
+note right of ViewModel
+  Acts as a mediator between
+  Model and View
+end note
+
+note right of View
+  Represents the user
+  interface
+end note
+
+' Slide 3: Project Structure
+newpage
+title "Project Structure Overview"
+
+package "MauiExamples.Core" {
+    package "Models" {
+        [Product]
+    }
+    
+    package "Services" {
+        [IProductService]
+        [ProductService]
+    }
+    
+    package "Examples" {
+        package "VanillaMVVM" {
+            [BaseViewModel]
+            [ProductsViewModel]
+        }
+        
+        package "MVVMToolkit" {
+            [ProductsViewModel]
+        }
+    }
+}
+
+note right of "MauiExamples.Core"
+  Core project containing
+  all business logic and
+  shared components
+end note
+
+' Slide 4: Vanilla MVVM Implementation
+newpage
+title "Vanilla MVVM Implementation"
+
+package "VanillaMVVM" {
+    class BaseViewModel {
+        #void SetProperty<T>()
+        #void OnPropertyChanged()
+    }
+    
+    class ProductsViewModel {
+        +ObservableCollection<Product>
+        +ICommand GoToDetailsCommand
+    }
+    
+    class ProductsPage {
+    }
+}
+
+BaseViewModel <|-- ProductsViewModel
+ProductsViewModel --> ProductsPage : bound to
+
+note right of BaseViewModel
+  Manual implementation of
+  INotifyPropertyChanged
+end note
+
+note right of ProductsViewModel
+  Uses ObservableCollection
+  for dynamic updates
+end note
+
+' Slide 5: MVVM Toolkit Implementation
+newpage
+title "MVVM Toolkit Implementation"
+
+package "MVVMToolkit" {
+    class ProductsViewModel {
+        [ObservableProperty]
+        ObservableCollection<Product>
+        
+        [RelayCommand]
+        void GoToDetails()
+    }
+    
+    class ProductsPage {
+    }
+}
+
+ProductsViewModel --> ProductsPage : bound to
+
+note right of ProductsViewModel
+  Uses source generators
+  for less boilerplate code
+end note
+
+note right of "[ObservableProperty]"
+  Automatically implements
+  INotifyPropertyChanged
+end note
+
+note right of "[RelayCommand]"
+  Automatically creates
+  ICommand implementations
+end note
+
+' Slide 6: Data Flow
+newpage
+title "Data Flow in MVVM"
+
+package "Services" {
+    interface IProductService {
+        +List<Product> GetAllProducts()
+    }
+}
+
+package "ViewModels" {
+    class ProductsViewModel {
+        -IProductService _productService
+        +void LoadProducts()
+    }
+}
+
+package "Views" {
+    class ProductsPage {
+    }
+}
+
+IProductService <.. ProductsViewModel : uses
+ProductsViewModel --> ProductsPage : bound to
+
+note right of IProductService
+  1. Service provides data
+end note
+
+note right of ProductsViewModel
+  2. ViewModel processes data
+  and exposes it to View
+end note
+
+note right of ProductsPage
+  3. View displays data
+  through data binding
+end note
+
+' Slide 7: Key Concepts
+newpage
+title "Key MVVM Concepts"
+
+package "Concepts" {
+    class DataBinding {
+        +One-way binding
+        +Two-way binding
+        +Command binding
+    }
+    
+    class Commands {
+        +ICommand interface
+        +RelayCommand
+        +AsyncCommand
+    }
+    
+    class ObservableCollections {
+        +INotifyCollectionChanged
+        +Dynamic updates
+    }
+}
+
+note right of DataBinding
+  Connects View and ViewModel
+  automatically
+end note
+
+note right of Commands
+  Handles user interactions
+  in a decoupled way
+end note
+
+note right of ObservableCollections
+  Enables automatic UI
+  updates when data changes
+end note
+
+@enduml 
