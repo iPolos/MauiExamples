@@ -38,7 +38,7 @@ public class ProductsViewModel : BaseViewModel
     public ICommand SelectProductCommand { get; }
     public ICommand AddProductCommand { get; }
 
-    public ProductsViewModel(IProductService productService, IServiceProvider serviceProvider)
+    public ProductsViewModel(IProductService productService, IServiceProvider serviceProvider, bool loadOnInit = true)
     {
         _productService = productService;
         _serviceProvider = serviceProvider;
@@ -50,7 +50,8 @@ public class ProductsViewModel : BaseViewModel
         AddProductCommand = new Command(AddProduct);
         
         // Load products immediately when ViewModel is created
-        LoadProducts();
+        if (loadOnInit)
+            LoadProducts();
     }
 
     public void LoadProducts()
