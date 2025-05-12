@@ -10,5 +10,6 @@
       &lt;TestId&gt;xUnit::1BA19A9C-D722-4ECB-956D-896FA523AD2E::net9.0::MauiExamples.UITests.AppUITests&lt;/TestId&gt;
       &lt;TestId&gt;xUnit::1BA19A9C-D722-4ECB-956D-896FA523AD2E::net9.0::MauiExamples.UITests.MainPageTests&lt;/TestId&gt;
     &lt;/TestAncestor&gt;
+    &lt;ProjectFile&gt;1BA19A9C-D722-4ECB-956D-896FA523AD2E/f:AddProductTests.cs&lt;/ProjectFile&gt;
   &lt;/Or&gt;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

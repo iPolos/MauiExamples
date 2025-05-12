@@ -4,13 +4,17 @@ using OpenQA.Selenium.Appium.iOS;
 using OpenQA.Selenium.Appium.Enums;
 using Xunit;
 using OpenQA.Selenium.Support.UI;
+using System;
+using System.Threading;
 
 namespace MauiExamples.UITests
 {
     public abstract class UITestBase : IDisposable
     {
-        protected AppiumDriver? Driver { get; private set; }
-        private const string AppiumServerUrl = "http://localhost:4723";
+        protected IOSDriver Driver { get; private set; }
+        private const int DefaultTimeoutSeconds = 60;
+        private const int RetryCount = 3;
+        private const int RetryDelayMs = 1000;
 
         protected UITestBase()
         {
@@ -20,63 +24,58 @@ namespace MauiExamples.UITests
         private void SetupDriver()
         {
             var options = new AppiumOptions();
-            
-            // Configure for iOS
             options.PlatformName = "iOS";
             options.AutomationName = "XCUITest";
-            options.App = "/Users/poloswelsen/Documents/projects/ipolos/ID.MauiExamples/MauiExamples/MauiExamples.UITests/bin/Debug/net9.0/MauiExamples.app";
-            options.AddAdditionalAppiumOption("bundleId", "com.companyname.mauiexamples");
             options.DeviceName = "iPhone 16";
             options.PlatformVersion = "18.4";
-            options.AddAdditionalAppiumOption("newCommandTimeout", 120); // 2 minutes timeout
-            options.AddAdditionalAppiumOption("launchTimeout", 120000); // 2 minutes launch timeout
-            options.AddAdditionalAppiumOption("noReset", false); // Reset app state between tests
-            options.AddAdditionalAppiumOption("autoAcceptAlerts", true); // Auto-accept system alerts
-            options.AddAdditionalAppiumOption("showIOSLog", true); // Show iOS logs
+            options.AddAdditionalAppiumOption("bundleId", "com.companyname.mauiexamples");
+            options.AddAdditionalAppiumOption("newCommandTimeout", 600);
+            options.AddAdditionalAppiumOption("launchTimeout", 300000);
 
-            Driver = new IOSDriver(new Uri(AppiumServerUrl), options);
+            var retryCount = 0;
+            while (retryCount < RetryCount)
+            {
+                try
+                {
+                    Driver = new IOSDriver(new Uri("http://localhost:4723"), options, TimeSpan.FromSeconds(DefaultTimeoutSeconds));
+                    return;
+                }
+                catch (Exception ex) when (retryCount < RetryCount - 1)
+                {
+                    retryCount++;
+                    Thread.Sleep(RetryDelayMs);
+                }
+            }
+
+            throw new Exception($"Failed to initialize driver after {RetryCount} attempts");
         }
 
-        protected IWebElement WaitForElement(string id, int timeoutSeconds = 30)
+        protected void WaitForElement(string id, int timeoutSeconds = DefaultTimeoutSeconds)
         {
             var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(timeoutSeconds));
-            return wait.Until(d => d.FindElement(By.Id(id)));
-        }
-
-        protected void ResetToMainPage()
-        {
-            try
+            wait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            wait.Until(driver =>
             {
-                // Try to find and click the back button if we're not on the main page
-                var backButton = Driver?.FindElement(By.Id("BackButton"));
-                if (backButton?.Displayed == true)
+                try
                 {
-                    backButton.Click();
+                    return driver.FindElement(By.Id(id)).Displayed;
                 }
-                
-                // Wait for main page to be visible
-                WaitForElement("MainPage");
-            }
-            catch
-            {
-                // If we can't navigate back, just restart the driver
-                Driver?.Quit();
-                Driver?.Dispose();
-                SetupDriver();
-                WaitForElement("MainPage");
-            }
+                catch
+                {
+                    return false;
+                }
+            });
         }
 
         public void Dispose()
         {
             try
             {
-                ResetToMainPage();
+                Driver?.Quit();
             }
             finally
             {
-                Driver?.Quit();
-                Driver?.Dispose();
+                Driver = null;
             }
         }
     }

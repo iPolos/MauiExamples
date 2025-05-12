@@ -11,24 +11,28 @@
                     <Label Text="Name:" FontAttributes="Bold" />
                     <Entry x:Name="NameEntry" 
                            Placeholder="Enter product name"
-                           TextChanged="OnEntryTextChanged" />
+                           TextChanged="OnEntryTextChanged"
+                           AutomationId="NameEntry" />
 
                     <Label Text="Description:" FontAttributes="Bold" />
                     <Editor x:Name="DescriptionEditor" 
                             Placeholder="Enter product description"
                             HeightRequest="100"
-                            TextChanged="OnEntryTextChanged" />
+                            TextChanged="OnEntryTextChanged"
+                            AutomationId="DescriptionEditor" />
 
                     <Label Text="Price:" FontAttributes="Bold" />
                     <Entry x:Name="PriceEntry" 
                            Keyboard="Numeric"
                            Placeholder="Enter price"
-                           TextChanged="OnEntryTextChanged" />
+                           TextChanged="OnEntryTextChanged"
+                           AutomationId="PriceEntry" />
 
                     <Label Text="Image URL:" FontAttributes="Bold" />
                     <Entry x:Name="ImageUrlEntry" 
                            Text="dotnet_bot.png"
-                           Placeholder="Enter image URL" />
+                           Placeholder="Enter image URL"
+                           AutomationId="ImageUrlEntry" />
 
                     <HorizontalStackLayout Spacing="10">
                         <Label Text="In Stock:" 
@@ -36,7 +40,8 @@
                                VerticalOptions="Center" />
                         <Switch x:Name="InStockSwitch" 
                                 IsToggled="True"
-                                VerticalOptions="Center" />
+                                VerticalOptions="Center"
+                                AutomationId="InStockSwitch" />
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
             </Frame>
@@ -48,13 +53,15 @@
                         BackgroundColor="{StaticResource Primary}"
                         TextColor="White"
                         WidthRequest="120"
-                        IsEnabled="False" />
+                        IsEnabled="False"
+                        AutomationId="SaveButton" />
                 
                 <Button Text="Cancel" 
                         Clicked="OnCancelClicked"
                         BackgroundColor="Gray"
                         TextColor="White"
-                        WidthRequest="120" />
+                        WidthRequest="120"
+                        AutomationId="CancelButton" />
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>
