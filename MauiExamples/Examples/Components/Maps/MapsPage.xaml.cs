@@ -17,62 +17,123 @@ public partial class MapsPage : ContentPage
     // Default map span (zoom level)
     private readonly double _defaultMapSpanInKm = 5.0;
     
+    // Colors for tab selection
+    private readonly Color _selectedTabColor;
+    private readonly Color _unselectedTabColor = Colors.LightGray;
+    
     public MapsPage()
     {
         InitializeComponent();
         
-        // Initialize maps with default view (Seattle)
-        InitializeMap(BasicMap, _seattleLocation);
-        InitializeMap(LocationMap, _seattleLocation);
-        InitializeMap(PinsMap, _seattleLocation);
-        InitializeMap(GeocodingMap, _seattleLocation);
+        // Safely get the primary color from resources, or use a default color
+        if (Application.Current?.Resources != null && 
+            Application.Current.Resources.TryGetValue("Primary", out var primaryColor) && 
+            primaryColor is Color color)
+        {
+            _selectedTabColor = color;
+        }
+        else
+        {
+            _selectedTabColor = Colors.Blue; // Fallback color
+        }
         
-        // Add demo pins to the pins map
-        AddDemoPins();
+        try
+        {
+            // Initialize maps with default view (Seattle)
+            InitializeMap(BasicMap, _seattleLocation);
+            InitializeMap(LocationMap, _seattleLocation);
+            InitializeMap(PinsMap, _seattleLocation);
+            InitializeMap(GeocodingMap, _seattleLocation);
+            
+            // Add demo pins to the pins map
+            AddDemoPins();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in MapsPage constructor: {ex.Message}");
+            // Don't throw to avoid crashing the app
+        }
     }
 
     protected override void OnAppearing()
     {
         base.OnAppearing();
         
-        // Show coordinates input for reverse geocoding after first load
-        CoordinatesGrid.IsVisible = true;
+        try
+        {
+            // Show coordinates input for reverse geocoding after first load
+            if (CoordinatesGrid != null)
+            {
+                CoordinatesGrid.IsVisible = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in OnAppearing: {ex.Message}");
+        }
     }
 
     #region Map Initialization
 
     private void InitializeMap(Map map, Location centerLocation)
     {
-        map.MoveToRegion(MapSpan.FromCenterAndRadius(
-            centerLocation,
-            Distance.FromKilometers(_defaultMapSpanInKm)));
+        if (map == null || centerLocation == null) return;
+        
+        try
+        {
+            map.MoveToRegion(MapSpan.FromCenterAndRadius(
+                centerLocation,
+                Distance.FromKilometers(_defaultMapSpanInKm)));
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error initializing map: {ex.Message}");
+        }
     }
 
     private void AddDemoPins()
     {
-        // Add some demo pins
-        AddPin(PinsMap, "Seattle", "The Emerald City", _seattleLocation);
-        AddPin(PinsMap, "New York", "The Big Apple", _newYorkLocation);
-        AddPin(PinsMap, "London", "The Big Smoke", _londonLocation);
-        AddPin(PinsMap, "Tokyo", "The Eastern Capital", _tokyoLocation);
-        AddPin(PinsMap, "Sydney", "The Harbour City", _sydneyLocation);
+        try
+        {
+            if (PinsMap == null) return;
+            
+            // Add some demo pins
+            AddPin(PinsMap, "Seattle", "The Emerald City", _seattleLocation);
+            AddPin(PinsMap, "New York", "The Big Apple", _newYorkLocation);
+            AddPin(PinsMap, "London", "The Big Smoke", _londonLocation);
+            AddPin(PinsMap, "Tokyo", "The Eastern Capital", _tokyoLocation);
+            AddPin(PinsMap, "Sydney", "The Harbour City", _sydneyLocation);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error adding demo pins: {ex.Message}");
+        }
     }
 
     private void AddPin(Map map, string label, string address, Location location)
     {
-        var pin = new Pin
+        if (map == null || location == null) return;
+        
+        try
         {
-            Label = label,
-            Address = address,
-            Location = location,
-            Type = PinType.Place
-        };
-        
-        // Add pin selected handler
-        pin.MarkerClicked += OnPinMarkerClicked;
-        pin.InfoWindowClicked += OnPinInfoWindowClicked;
-        
-        map.Pins.Add(pin);
+            var pin = new Pin
+            {
+                Label = label ?? "Unknown",
+                Address = address ?? string.Empty,
+                Location = location,
+                Type = PinType.Place
+            };
+            
+            // Add pin selected handler
+            pin.MarkerClicked += OnPinMarkerClicked;
+            pin.InfoWindowClicked += OnPinInfoWindowClicked;
+            
+            map.Pins.Add(pin);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error adding pin: {ex.Message}");
+        }
     }
 
     #endregion
@@ -81,43 +142,78 @@ public partial class MapsPage : ContentPage
 
     private void ResetTabButtons()
     {
-        BasicMapButton.BackgroundColor = Colors.LightGray;
-        UserLocationButton.BackgroundColor = Colors.LightGray;
-        PinsButton.BackgroundColor = Colors.LightGray;
-        GeocodingButton.BackgroundColor = Colors.LightGray;
-        
-        BasicMapView.IsVisible = false;
-        UserLocationView.IsVisible = false;
-        PinsView.IsVisible = false;
-        GeocodingView.IsVisible = false;
+        try 
+        {
+            if (BasicMapButton != null) BasicMapButton.BackgroundColor = _unselectedTabColor;
+            if (UserLocationButton != null) UserLocationButton.BackgroundColor = _unselectedTabColor;
+            if (PinsButton != null) PinsButton.BackgroundColor = _unselectedTabColor;
+            if (GeocodingButton != null) GeocodingButton.BackgroundColor = _unselectedTabColor;
+            
+            if (BasicMapView != null) BasicMapView.IsVisible = false;
+            if (UserLocationView != null) UserLocationView.IsVisible = false;
+            if (PinsView != null) PinsView.IsVisible = false;
+            if (GeocodingView != null) GeocodingView.IsVisible = false;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error resetting tab buttons: {ex.Message}");
+        }
     }
 
     private void OnBasicMapClicked(object sender, EventArgs e)
     {
-        ResetTabButtons();
-        BasicMapButton.BackgroundColor = (Color)Application.Current.Resources["Primary"];
-        BasicMapView.IsVisible = true;
+        try
+        {
+            ResetTabButtons();
+            if (BasicMapButton != null) BasicMapButton.BackgroundColor = _selectedTabColor;
+            if (BasicMapView != null) BasicMapView.IsVisible = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in OnBasicMapClicked: {ex.Message}");
+        }
     }
 
     private void OnUserLocationClicked(object sender, EventArgs e)
     {
-        ResetTabButtons();
-        UserLocationButton.BackgroundColor = (Color)Application.Current.Resources["Primary"];
-        UserLocationView.IsVisible = true;
+        try
+        {
+            ResetTabButtons();
+            if (UserLocationButton != null) UserLocationButton.BackgroundColor = _selectedTabColor;
+            if (UserLocationView != null) UserLocationView.IsVisible = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in OnUserLocationClicked: {ex.Message}");
+        }
     }
 
     private void OnPinsClicked(object sender, EventArgs e)
     {
-        ResetTabButtons();
-        PinsButton.BackgroundColor = (Color)Application.Current.Resources["Primary"];
-        PinsView.IsVisible = true;
+        try
+        {
+            ResetTabButtons();
+            if (PinsButton != null) PinsButton.BackgroundColor = _selectedTabColor;
+            if (PinsView != null) PinsView.IsVisible = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in OnPinsClicked: {ex.Message}");
+        }
     }
 
     private void OnGeocodingClicked(object sender, EventArgs e)
     {
-        ResetTabButtons();
-        GeocodingButton.BackgroundColor = (Color)Application.Current.Resources["Primary"];
-        GeocodingView.IsVisible = true;
+        try
+        {
+            ResetTabButtons();
+            if (GeocodingButton != null) GeocodingButton.BackgroundColor = _selectedTabColor;
+            if (GeocodingView != null) GeocodingView.IsVisible = true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in OnGeocodingClicked: {ex.Message}");
+        }
     }
 
     #endregion
@@ -126,18 +222,25 @@ public partial class MapsPage : ContentPage
 
     private void OnMapTypeChanged(object sender, EventArgs e)
     {
-        if (MapTypePicker.SelectedIndex == -1)
-            return;
-
-        MapType mapType = MapTypePicker.SelectedIndex switch
+        try
         {
-            0 => MapType.Street,
-            1 => MapType.Satellite,
-            2 => MapType.Hybrid,
-            _ => MapType.Street
-        };
+            if (MapTypePicker == null || BasicMap == null || MapTypePicker.SelectedIndex == -1)
+                return;
 
-        BasicMap.MapType = mapType;
+            MapType mapType = MapTypePicker.SelectedIndex switch
+            {
+                0 => MapType.Street,
+                1 => MapType.Satellite,
+                2 => MapType.Hybrid,
+                _ => MapType.Street
+            };
+
+            BasicMap.MapType = mapType;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error changing map type: {ex.Message}");
+        }
     }
 
     #endregion
@@ -172,15 +275,18 @@ public partial class MapsPage : ContentPage
             if (location != null)
             {
                 // Update the UI
-                LatitudeLabel.Text = $"Latitude: {location.Latitude}";
-                LongitudeLabel.Text = $"Longitude: {location.Longitude}";
-                AccuracyLabel.Text = $"Accuracy: {location.Accuracy} meters";
+                if (LatitudeLabel != null) LatitudeLabel.Text = $"Latitude: {location.Latitude}";
+                if (LongitudeLabel != null) LongitudeLabel.Text = $"Longitude: {location.Longitude}";
+                if (AccuracyLabel != null) AccuracyLabel.Text = $"Accuracy: {location.Accuracy} meters";
                 
                 // Move the map to the current location
-                var mapLocation = new Location(location.Latitude, location.Longitude);
-                LocationMap.MoveToRegion(MapSpan.FromCenterAndRadius(
-                    mapLocation,
-                    Distance.FromKilometers(1)));
+                if (LocationMap != null)
+                {
+                    var mapLocation = new Location(location.Latitude, location.Longitude);
+                    LocationMap.MoveToRegion(MapSpan.FromCenterAndRadius(
+                        mapLocation,
+                        Distance.FromKilometers(1)));
+                }
             }
             else
             {
@@ -206,6 +312,9 @@ public partial class MapsPage : ContentPage
     {
         try
         {
+            if (PinNameEntry == null || PinAddressEntry == null || PinsMap == null)
+                return;
+                
             string pinName = PinNameEntry.Text;
             string pinAddress = PinAddressEntry.Text;
             
@@ -256,16 +365,36 @@ public partial class MapsPage : ContentPage
 
     private void OnPinMarkerClicked(object sender, PinClickedEventArgs e)
     {
-        // Returning true will keep the popup open
-        e.HideInfoWindow = false;
+        try
+        {
+            if (e != null)
+            {
+                // Returning true will keep the popup open
+                e.HideInfoWindow = false;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in pin marker clicked: {ex.Message}");
+        }
     }
 
     private async void OnPinInfoWindowClicked(object sender, PinClickedEventArgs e)
     {
-        if (sender is Pin pin)
+        try
         {
-            // Show details when info window is clicked
-            await DisplayAlert(pin.Label, $"Address: {pin.Address}\nLocation: {pin.Location.Latitude}, {pin.Location.Longitude}", "OK");
+            if (sender is Pin pin && pin != null)
+            {
+                // Show details when info window is clicked
+                await DisplayAlert(
+                    pin.Label ?? "Pin", 
+                    $"Address: {pin.Address ?? "Unknown"}\nLocation: {pin.Location?.Latitude.ToString() ?? "?"}, {pin.Location?.Longitude.ToString() ?? "?"}", 
+                    "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error in pin info window clicked: {ex.Message}");
         }
     }
 
@@ -277,6 +406,10 @@ public partial class MapsPage : ContentPage
     {
         try
         {
+            if (AddressEntry == null || GeocodingResultLabel == null || GeocodingMap == null || 
+                LatitudeEntry == null || LongitudeEntry == null)
+                return;
+                
             string address = AddressEntry.Text;
             
             if (string.IsNullOrWhiteSpace(address))
@@ -317,7 +450,10 @@ public partial class MapsPage : ContentPage
         catch (Exception ex)
         {
             Debug.WriteLine($"Error geocoding: {ex.Message}");
-            GeocodingResultLabel.Text = $"Error: {ex.Message}";
+            if (GeocodingResultLabel != null)
+            {
+                GeocodingResultLabel.Text = $"Error: {ex.Message}";
+            }
         }
         finally
         {
@@ -329,6 +465,10 @@ public partial class MapsPage : ContentPage
     {
         try
         {
+            if (LatitudeEntry == null || LongitudeEntry == null || GeocodingResultLabel == null || 
+                AddressEntry == null || GeocodingMap == null)
+                return;
+                
             // Validate input
             if (!double.TryParse(LatitudeEntry.Text, out double latitude) ||
                 !double.TryParse(LongitudeEntry.Text, out double longitude))
@@ -371,7 +511,10 @@ public partial class MapsPage : ContentPage
         catch (Exception ex)
         {
             Debug.WriteLine($"Error reverse geocoding: {ex.Message}");
-            GeocodingResultLabel.Text = $"Error: {ex.Message}";
+            if (GeocodingResultLabel != null)
+            {
+                GeocodingResultLabel.Text = $"Error: {ex.Message}";
+            }
         }
         finally
         {
@@ -381,6 +524,8 @@ public partial class MapsPage : ContentPage
 
     private static string FormatAddress(Placemark placemark)
     {
+        if (placemark == null) return "Unknown location";
+        
         return string.Format("{0} {1}, {2}, {3} {4}, {5}",
             placemark.Thoroughfare ?? string.Empty,
             placemark.SubThoroughfare ?? string.Empty,
