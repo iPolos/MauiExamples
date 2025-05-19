@@ -58,6 +58,8 @@ public static class MauiProgram
         // Components Implementation
         builder.Services.AddTransient<Examples.Components.ComponentsPage>();
         builder.Services.AddTransient<Examples.Components.LocalNotifications.LocalNotificationPage>();
+        builder.Services.AddTransient<Examples.Components.Camera.CameraPage>();
+        builder.Services.AddTransient<Examples.Components.Camera.PhotoDetailPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

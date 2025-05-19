@@ -19,5 +19,7 @@ public partial class AppShell : Shell
         // Register routes for components
         Routing.RegisterRoute("examples/components", typeof(Examples.Components.ComponentsPage));
         Routing.RegisterRoute("examples/components/localnotification", typeof(Examples.Components.LocalNotifications.LocalNotificationPage));
+        Routing.RegisterRoute("examples/components/camera", typeof(Examples.Components.Camera.CameraPage));
+        Routing.RegisterRoute("examples/components/camera/detail", typeof(Examples.Components.Camera.PhotoDetailPage));
     }
 }

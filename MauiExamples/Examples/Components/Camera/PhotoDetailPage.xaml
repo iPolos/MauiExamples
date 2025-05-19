@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.Examples.Components.Camera.PhotoDetailPage"
+             Title="Photo Detail">
+    <Grid RowDefinitions="*,Auto">
+        <!-- Photo Display -->
+        <Image x:Name="PhotoImage"
+               Grid.Row="0"
+               Aspect="AspectFit"
+               HorizontalOptions="Fill"
+               VerticalOptions="Fill" />
+        
+        <!-- Photo Info -->
+        <VerticalStackLayout Grid.Row="1" Padding="20">
+            <Label x:Name="DateTakenLabel" 
+                   FontSize="14" 
+                   TextColor="Gray" 
+                   Margin="0,0,0,10" />
+            
+            <Button Text="Delete Photo" 
+                    Clicked="OnDeletePhotoClicked"
+                    BackgroundColor="Red"
+                    TextColor="White"
+                    Margin="0,10,0,0" />
+        </VerticalStackLayout>
+    </Grid>
+</ContentPage> 

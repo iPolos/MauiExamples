@@ -52,6 +52,8 @@
         <!-- Images -->
         <MauiImage Include="Resources\Images\*" />
         <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+        <!-- Removing duplicate reference to noimage.svg as it's already included in the wildcard pattern above -->
+        <!-- <MauiImage Include="Resources\Images\noimage.svg" /> -->
 
         <!-- Custom Fonts -->
         <MauiFont Include="Resources\Fonts\*" />

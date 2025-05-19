@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.Examples.Components.Camera.CameraPage"
+             Title="Camera">
+    <Grid RowDefinitions="Auto,*,Auto" Padding="20">
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="10" Margin="0,0,0,20">
+            <Label Text="Camera Example" 
+                   Style="{StaticResource Headline}"/>
+            <Label Text="Take photos and view them in a gallery" 
+                   Style="{StaticResource SubHeadline}"/>
+        </VerticalStackLayout>
+        
+        <!-- Photo Gallery -->
+        <ScrollView Grid.Row="1">
+            <CollectionView x:Name="PhotoCollection" 
+                            SelectionMode="Single"
+                            SelectionChanged="OnPhotoSelected">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" 
+                                     Span="2"
+                                     VerticalItemSpacing="10"
+                                     HorizontalItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.EmptyView>
+                    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                        <Image Source="noimage.png" WidthRequest="100" HeightRequest="100" Opacity="0.5" />
+                        <Label Text="No photos yet" 
+                               HorizontalOptions="Center" 
+                               TextColor="Gray" 
+                               Margin="0,10,0,0" />
+                        <Label Text="Take your first photo with the button below" 
+                               HorizontalOptions="Center" 
+                               TextColor="Gray" 
+                               FontSize="Small" />
+                    </VerticalStackLayout>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="0" 
+                               CornerRadius="10" 
+                               IsClippedToBounds="True"
+                               BorderColor="LightGray"
+                               HasShadow="True">
+                            <Grid>
+                                <Image Source="{Binding FilePath}" 
+                                       Aspect="AspectFill" 
+                                       HeightRequest="150" />
+                                <Border Background="#80000000" 
+                                        VerticalOptions="End">
+                                    <Label Text="{Binding DateTaken, StringFormat='{0:g}'}" 
+                                           TextColor="White" 
+                                           FontSize="12" 
+                                           Padding="10,5" />
+                                </Border>
+                            </Grid>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </ScrollView>
+        
+        <!-- Camera Controls -->
+        <Grid Grid.Row="2" ColumnDefinitions="*,Auto,*" Margin="0,20,0,0">
+            <Button Grid.Column="1"
+                    Text="Take Photo" 
+                    Clicked="OnTakePhotoClicked"
+                    WidthRequest="150"
+                    HeightRequest="50" />
+        </Grid>
+    </Grid>
+</ContentPage> 

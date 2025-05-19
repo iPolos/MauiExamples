@@ -47,5 +47,6 @@ To add a new component example:
 ## Available Components
 
 - **[Local Notifications](./LocalNotifications/README.md)**: Examples of how to use local notifications in MAUI
+- **[Camera](./Camera/README.md)**: Take photos and manage a photo gallery
 
 <!-- Add more components here as they are created --> 

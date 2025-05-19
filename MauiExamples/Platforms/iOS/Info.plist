@@ -34,5 +34,11 @@
 	</array>
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>We use notifications to remind you about important events and updates.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to the camera to take photos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to save photos to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to photos from your photo library.</string>
 </dict>
 </plist>

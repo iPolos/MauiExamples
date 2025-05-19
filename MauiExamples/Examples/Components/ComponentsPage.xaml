@@ -9,21 +9,28 @@
                Style="{StaticResource Headline}" 
                Margin="10,20,10,10"/>
         
-        <CollectionView Grid.Row="1" 
-                        x:Name="ComponentsCollection"
-                        Margin="10"
-                        SelectionMode="Single"
-                        SelectionChanged="OnSelectionChanged">
-            <CollectionView.ItemTemplate>
+        <ListView Grid.Row="1" 
+                  x:Name="ComponentsCollection"
+                  Margin="10"
+                  ItemSelected="OnItemSelected"
+                  HasUnevenRows="True"
+                  SeparatorVisibility="None">
+            <ListView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="0,5" Padding="10" BorderColor="LightGray">
-                        <StackLayout>
-                            <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" />
-                            <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
-                        </StackLayout>
-                    </Frame>
+                    <ViewCell>
+                        <Frame Margin="0,5" Padding="10" BorderColor="LightGray">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnComponentTapped" 
+                                                      NumberOfTapsRequired="1" />
+                            </Frame.GestureRecognizers>
+                            <StackLayout>
+                                <Label Text="{Binding Name}" FontSize="16" FontAttributes="Bold" />
+                                <Label Text="{Binding Description}" FontSize="14" TextColor="Gray" />
+                            </StackLayout>
+                        </Frame>
+                    </ViewCell>
                 </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+            </ListView.ItemTemplate>
+        </ListView>
     </Grid>
 </ContentPage> 
