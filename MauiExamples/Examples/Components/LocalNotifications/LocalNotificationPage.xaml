@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.Examples.Components.LocalNotifications.LocalNotificationPage"
+             Title="Local Notifications">
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="20">
+            <Label Text="Local Notifications Demo" 
+                   Style="{StaticResource Headline}"/>
+            
+            <Frame BorderColor="LightGray" Padding="15" Margin="0,10">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Basic Notification" FontAttributes="Bold" FontSize="Medium"/>
+                    <Entry x:Name="TitleEntry" Placeholder="Notification Title" Text="Basic Notification"/>
+                    <Entry x:Name="MessageEntry" Placeholder="Notification Message" Text="This is a basic notification from the MAUI app"/>
+                    <Button Text="Send Notification" Clicked="OnBasicNotificationClicked"/>
+                </VerticalStackLayout>
+            </Frame>
+            
+            <Frame BorderColor="LightGray" Padding="15" Margin="0,10">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Delayed Notification" FontAttributes="Bold" FontSize="Medium"/>
+                    <Label Text="Send a notification after a delay"/>
+                    <HorizontalStackLayout Spacing="10">
+                        <Label Text="Delay (seconds):" VerticalOptions="Center"/>
+                        <Entry x:Name="DelayEntry" Text="5" Keyboard="Numeric" WidthRequest="100"/>
+                    </HorizontalStackLayout>
+                    <Button Text="Schedule Notification" Clicked="OnScheduledNotificationClicked"/>
+                </VerticalStackLayout>
+            </Frame>
+            
+            <Frame BorderColor="LightGray" Padding="15" Margin="0,10">
+                <VerticalStackLayout Spacing="15">
+                    <Label Text="Cancel Notifications" FontAttributes="Bold" FontSize="Medium"/>
+                    <Button Text="Cancel All Notifications" Clicked="OnCancelNotificationsClicked"/>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 

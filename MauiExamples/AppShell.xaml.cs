@@ -15,5 +15,9 @@ public partial class AppShell : Shell
         
         Routing.RegisterRoute("examples/toolkit/products", typeof(Examples.MvvmToolkit.Views.ProductsPage));
         Routing.RegisterRoute("examples/toolkit/details", typeof(Examples.MvvmToolkit.Views.ProductDetailPage));
+        
+        // Register routes for components
+        Routing.RegisterRoute("examples/components", typeof(Examples.Components.ComponentsPage));
+        Routing.RegisterRoute("examples/components/localnotification", typeof(Examples.Components.LocalNotifications.LocalNotificationPage));
     }
 }

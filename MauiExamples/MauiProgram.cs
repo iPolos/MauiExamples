@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using MauiExamples.Services;
 using CommunityToolkit.Maui;
+using Plugin.LocalNotification;
 
 namespace MauiExamples;
 
@@ -12,12 +13,13 @@ public static class MauiProgram
         builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
+            .UseLocalNotification()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
-
+            
         // Register services
         // Default implementation
         builder.Services.AddSingleton<IProductService, ApiProductService>();
@@ -52,6 +54,10 @@ public static class MauiProgram
         builder.Services.AddTransient<Examples.MvvmToolkit.Views.ProductsPage>();
         builder.Services.AddTransient<Examples.MvvmToolkit.Views.ProductDetailPage>();
         builder.Services.AddTransient<Examples.MvvmToolkit.Views.AddProductPage>();
+        
+        // Components Implementation
+        builder.Services.AddTransient<Examples.Components.ComponentsPage>();
+        builder.Services.AddTransient<Examples.Components.LocalNotifications.LocalNotificationPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();

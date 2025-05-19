@@ -47,6 +47,13 @@
                 Clicked="OnMvvmToolkitButtonClicked"
                 HorizontalOptions="Fill"
                 AutomationId="MvvmToolkitButton" />
+                
+            <Button
+                x:Name="ComponentsButton"
+                Text="Components" 
+                Clicked="OnComponentsButtonClicked"
+                HorizontalOptions="Fill"
+                AutomationId="ComponentsButton" />
         </VerticalStackLayout>
     </ScrollView>
 

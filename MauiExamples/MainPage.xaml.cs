@@ -30,4 +30,10 @@ public partial class MainPage : ContentPage
         var page = _serviceProvider.GetRequiredService<Examples.MvvmToolkit.Views.ProductsPage>();
         await Shell.Current.Navigation.PushAsync(page);
     }
+
+    private async void OnComponentsButtonClicked(object sender, EventArgs e)
+    {
+        var page = _serviceProvider.GetRequiredService<Examples.Components.ComponentsPage>();
+        await Shell.Current.Navigation.PushAsync(page);
+    }
 }
