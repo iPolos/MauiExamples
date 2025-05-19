@@ -26,6 +26,12 @@ public partial class ComponentsPage : ContentPage
                 Name = "Camera",
                 Description = "Take photos and manage a photo gallery",
                 PageType = typeof(Camera.CameraPage)
+            },
+            new ComponentItem
+            {
+                Name = "Maps & Location",
+                Description = "Display maps, track location, and perform geocoding",
+                PageType = typeof(Maps.MapsPage)
             }
             // Add more components here as they are created
         };

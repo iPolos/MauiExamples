@@ -2,6 +2,8 @@
 using MauiExamples.Services;
 using CommunityToolkit.Maui;
 using Plugin.LocalNotification;
+using Microsoft.Maui.Controls.Maps;
+using Microsoft.Maui.Maps;
 
 namespace MauiExamples;
 
@@ -14,6 +16,7 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
             .UseLocalNotification()
+            .UseMauiMaps()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -60,6 +63,7 @@ public static class MauiProgram
         builder.Services.AddTransient<Examples.Components.LocalNotifications.LocalNotificationPage>();
         builder.Services.AddTransient<Examples.Components.Camera.CameraPage>();
         builder.Services.AddTransient<Examples.Components.Camera.PhotoDetailPage>();
+        builder.Services.AddTransient<Examples.Components.Maps.MapsPage>();
 
 #if DEBUG
         builder.Logging.AddDebug();
