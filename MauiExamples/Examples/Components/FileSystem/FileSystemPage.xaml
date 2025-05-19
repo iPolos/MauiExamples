@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.Examples.Components.FileSystem.FileSystemPage"
+             Title="File System">
+    <Grid RowDefinitions="Auto,*">
+        <!-- Tab buttons -->
+        <Grid ColumnDefinitions="*,*,*,*" Padding="5" ColumnSpacing="5">
+            <Button x:Name="BasicOperationsButton" Text="Basic" Clicked="OnBasicOperationsClicked" 
+                    Grid.Column="0" />
+            <Button x:Name="AppDataButton" Text="App Storage" Clicked="OnAppDataClicked" 
+                    Grid.Column="1" />
+            <Button x:Name="MediaButton" Text="Media" Clicked="OnMediaClicked" 
+                    Grid.Column="2" />
+            <Button x:Name="PickerButton" Text="Pickers" Clicked="OnPickerClicked" 
+                    Grid.Column="3" />
+        </Grid>
+
+        <!-- Tab content -->
+        <Grid Grid.Row="1" Padding="10">
+            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" VerticalOptions="Center" HorizontalOptions="Center" />
+
+            <!-- Basic file operations -->
+            <StackLayout x:Name="BasicOperationsView" IsVisible="True" Spacing="10">
+                <Label Text="Basic File Operations" FontSize="Medium" FontAttributes="Bold" />
+                <Label Text="Create, Read, Update, and Delete text files" Margin="0,0,0,15" />
+                
+                <Entry x:Name="FileNameEntry" Placeholder="File name (e.g., myfile.txt)" />
+                <Editor x:Name="FileContentEditor" Placeholder="Enter content to write to the file" HeightRequest="100" />
+                
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,0">
+                    <Button Text="Write File" Clicked="OnWriteFileClicked" Grid.Column="0" />
+                    <Button Text="Read File" Clicked="OnReadFileClicked" Grid.Column="1" />
+                </Grid>
+                
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,0">
+                    <Button Text="Append to File" Clicked="OnAppendFileClicked" Grid.Column="0" />
+                    <Button Text="Delete File" Clicked="OnDeleteFileClicked" Grid.Column="1" />
+                </Grid>
+                
+                <Label Text="File System Information:" FontAttributes="Bold" Margin="0,20,0,0" />
+                <Label x:Name="FilesystemInfoLabel" Text="" />
+                
+                <Button Text="Show File System Info" Clicked="OnShowFileSystemInfoClicked" Margin="0,10,0,0" />
+                <Button Text="List All Files" Clicked="OnListFilesClicked" Margin="0,10,0,0" />
+                
+                <ScrollView HeightRequest="150" Margin="0,10,0,0">
+                    <Label x:Name="OutputLabel" Text="" />
+                </ScrollView>
+            </StackLayout>
+
+            <!-- App-specific storage -->
+            <StackLayout x:Name="AppDataView" IsVisible="False" Spacing="10">
+                <Label Text="App-Specific Storage" FontSize="Medium" FontAttributes="Bold" />
+                <Label Text="Store data in app-specific directories" Margin="0,0,0,15" />
+                
+                <Label Text="Settings:" FontAttributes="Bold" />
+                <Entry x:Name="SettingKeyEntry" Placeholder="Setting Key" />
+                <Entry x:Name="SettingValueEntry" Placeholder="Setting Value" />
+                
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,0">
+                    <Button Text="Save Setting" Clicked="OnSaveSettingClicked" Grid.Column="0" />
+                    <Button Text="Get Setting" Clicked="OnGetSettingClicked" Grid.Column="1" />
+                </Grid>
+                
+                <Label Text="Secure Storage (for passwords, tokens):" FontAttributes="Bold" Margin="0,20,0,0" />
+                <Entry x:Name="SecureKeyEntry" Placeholder="Key" />
+                <Entry x:Name="SecureValueEntry" Placeholder="Value" />
+                
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10" Margin="0,10,0,0">
+                    <Button Text="Save Secure" Clicked="OnSaveSecureClicked" Grid.Column="0" />
+                    <Button Text="Get Secure" Clicked="OnGetSecureClicked" Grid.Column="1" />
+                    <Button Text="Remove Secure" Clicked="OnRemoveSecureClicked" Grid.Column="2" />
+                </Grid>
+                
+                <Label Text="Cache Directory (Temporary Files):" FontAttributes="Bold" Margin="0,20,0,0" />
+                <Entry x:Name="CacheFileNameEntry" Placeholder="Cache file name" />
+                <Entry x:Name="CacheContentEntry" Placeholder="Cache content" />
+                
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10" Margin="0,10,0,0">
+                    <Button Text="Write Cache" Clicked="OnWriteCacheClicked" Grid.Column="0" />
+                    <Button Text="Clear Cache" Clicked="OnClearCacheClicked" Grid.Column="1" />
+                </Grid>
+                
+                <ScrollView HeightRequest="100" Margin="0,10,0,0">
+                    <Label x:Name="AppDataOutputLabel" Text="" />
+                </ScrollView>
+            </StackLayout>
+
+            <!-- Media storage -->
+            <StackLayout x:Name="MediaView" IsVisible="False" Spacing="10">
+                <Label Text="Media File Access" FontSize="Medium" FontAttributes="Bold" />
+                <Label Text="Access device's media files" Margin="0,0,0,15" />
+                
+                <Button Text="Take Photo" Clicked="OnTakePhotoClicked" />
+                <Button Text="Save Image to Gallery" Clicked="OnSaveToGalleryClicked" Margin="0,10,0,0" />
+                <Image x:Name="MediaImage" HeightRequest="200" Aspect="AspectFit" Margin="0,10,0,0" />
+                
+                <Label Text="Image Path:" FontAttributes="Bold" Margin="0,10,0,0" />
+                <Label x:Name="ImagePathLabel" Text="" TextColor="Gray" FontSize="Small" />
+                
+                <Button Text="Create Text File in Downloads" Clicked="OnCreateFileInDownloadsClicked" Margin="0,20,0,0" />
+                
+                <ScrollView HeightRequest="100" Margin="0,10,0,0">
+                    <Label x:Name="MediaOutputLabel" Text="" />
+                </ScrollView>
+            </StackLayout>
+
+            <!-- File pickers -->
+            <StackLayout x:Name="PickerView" IsVisible="False" Spacing="10">
+                <Label Text="File Pickers" FontSize="Medium" FontAttributes="Bold" />
+                <Label Text="Use system pickers to open and save files" Margin="0,0,0,15" />
+                
+                <Button Text="Pick File" Clicked="OnPickFileClicked" />
+                <Button Text="Pick Multiple Files" Clicked="OnPickMultipleFilesClicked" Margin="0,10,0,0" />
+                <Button Text="Pick Folder" Clicked="OnPickFolderClicked" Margin="0,10,0,0" />
+                
+                <Label Text="File Contents:" FontAttributes="Bold" Margin="0,20,0,0" />
+                <ScrollView HeightRequest="200" Margin="0,5,0,0">
+                    <Label x:Name="PickerOutputLabel" Text="" />
+                </ScrollView>
+            </StackLayout>
+        </Grid>
+    </Grid>
+</ContentPage> 
