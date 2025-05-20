@@ -47,4 +47,46 @@ public partial class ProductsPage : ContentPage
         
         await Shell.Current.Navigation.PushAsync(addProductPage);
     }
+    
+    private async void OnDeleteSwipeItemInvoked(object sender, EventArgs e)
+    {
+        // Get the SwipeItem that was invoked
+        if (sender is SwipeItem swipeItem && swipeItem.BindingContext is Product product)
+        {
+            // Ask for confirmation
+            bool confirmed = await DisplayAlert(
+                "Delete Product", 
+                $"Are you sure you want to delete {product.Name}?", 
+                "Yes", "No");
+            
+            if (!confirmed)
+                return;
+                
+            try
+            {
+                // Delete the product
+                bool success = _productService.DeleteProduct(product.Id);
+                
+                if (success)
+                {
+                    // Show success message
+                    await DisplayAlert("Success", $"{product.Name} was deleted successfully.", "OK");
+                    
+                    // Reload the products list
+                    OnPageLoaded(this, EventArgs.Empty);
+                }
+                else
+                {
+                    // Show error message
+                    await DisplayAlert("Error", $"Failed to delete {product.Name}.", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                System.Diagnostics.Debug.WriteLine($"Error deleting product: {ex.Message}");
+                await DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
+            }
+        }
+    }
 } 

@@ -25,21 +25,33 @@
                             AutomationId="ProductsList">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Padding="10" ColumnDefinitions="Auto,*">
-                            <Image Grid.Column="0" 
-                                   Source="{Binding ImageUrl}" 
-                                   WidthRequest="60" 
-                                   HeightRequest="60"
-                                   Aspect="AspectFit"
-                                   VerticalOptions="Center"
-                                   AutomationId="ProductImage" />
+                        <SwipeView AutomationId="ProductSwipeView">
+                            <SwipeView.LeftItems>
+                                <SwipeItems Mode="Execute">
+                                    <SwipeItem Text="Delete"
+                                               BackgroundColor="Red"
+                                               Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:ProductsViewModel}}, Path=DeleteProductCommand}"
+                                               CommandParameter="{Binding .}"
+                                               AutomationId="DeleteSwipeItem" />
+                                </SwipeItems>
+                            </SwipeView.LeftItems>
                             
-                            <VerticalStackLayout Grid.Column="1" Padding="15,0,0,0" VerticalOptions="Center">
-                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" AutomationId="ProductName" />
-                                <Label Text="{Binding Price, StringFormat='${0:F2}'}" FontSize="16" TextColor="{AppThemeBinding Light=DarkSlateGray, Dark=LightGray}" AutomationId="ProductPrice" />
-                                <Label Text="{Binding InStock, StringFormat='In Stock: {0}'}" FontSize="14" AutomationId="ProductStock" />
-                            </VerticalStackLayout>
-                        </Grid>
+                            <Grid Padding="10" ColumnDefinitions="Auto,*">
+                                <Image Grid.Column="0" 
+                                       Source="{Binding ImageUrl}" 
+                                       WidthRequest="60" 
+                                       HeightRequest="60"
+                                       Aspect="AspectFit"
+                                       VerticalOptions="Center"
+                                       AutomationId="ProductImage" />
+                                
+                                <VerticalStackLayout Grid.Column="1" Padding="15,0,0,0" VerticalOptions="Center">
+                                    <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" AutomationId="ProductName" />
+                                    <Label Text="{Binding Price, StringFormat='${0:F2}'}" FontSize="16" TextColor="{AppThemeBinding Light=DarkSlateGray, Dark=LightGray}" AutomationId="ProductPrice" />
+                                    <Label Text="{Binding InStock, StringFormat='In Stock: {0}'}" FontSize="14" AutomationId="ProductStock" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </SwipeView>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>

@@ -37,6 +37,7 @@ public class ProductsViewModel : BaseViewModel
     public ICommand LoadProductsCommand { get; }
     public ICommand SelectProductCommand { get; }
     public ICommand AddProductCommand { get; }
+    public ICommand DeleteProductCommand { get; }
 
     public ProductsViewModel(IProductService productService, IServiceProvider serviceProvider, bool loadOnInit = true)
     {
@@ -48,6 +49,7 @@ public class ProductsViewModel : BaseViewModel
         LoadProductsCommand = new Command(LoadProducts);
         SelectProductCommand = new Command<Product>(SelectProduct);
         AddProductCommand = new Command(AddProduct);
+        DeleteProductCommand = new Command<Product>(DeleteProduct);
         
         // Load products immediately when ViewModel is created
         if (loadOnInit)
@@ -69,6 +71,51 @@ public class ProductsViewModel : BaseViewModel
             {
                 Products.Add(product);
             }
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+    
+    private async void DeleteProduct(Product product)
+    {
+        if (product == null)
+            return;
+
+        // Ask for confirmation
+        bool confirmed = await Shell.Current.DisplayAlert(
+            "Delete Product", 
+            $"Are you sure you want to delete {product.Name}?", 
+            "Yes", "No");
+
+        if (!confirmed)
+            return;
+
+        IsBusy = true;
+        try
+        {
+            // Call the API to delete the product
+            bool success = _productService.DeleteProduct(product.Id);
+
+            if (success)
+            {
+                // If successful, remove it from the observable collection
+                Products.Remove(product);
+                // Show success message
+                await Shell.Current.DisplayAlert("Success", $"{product.Name} was deleted successfully.", "OK");
+            }
+            else
+            {
+                // Show error message
+                await Shell.Current.DisplayAlert("Error", $"Failed to delete {product.Name}.", "OK");
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log the exception
+            System.Diagnostics.Debug.WriteLine($"Error deleting product: {ex.Message}");
+            await Shell.Current.DisplayAlert("Error", $"An error occurred: {ex.Message}", "OK");
         }
         finally
         {

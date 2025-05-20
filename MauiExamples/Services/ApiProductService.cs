@@ -1,98 +1,198 @@
 using MauiExamples.Models;
+using System.Net.Http.Json;
+using System.Text;
+using System.Text.Json;
+using System.Diagnostics;
 
 namespace MauiExamples.Services;
 
 /// <summary>
-/// Simulated API implementation of IProductService
-/// In a real application, this would make HTTP requests to a backend API
+/// API implementation of IProductService
+/// Makes actual HTTP requests to the backend API
 /// </summary>
 public class ApiProductService : IProductService
 {
-    // For demo purposes, we'll use a similar in-memory list
-    // but with different products to show it's a different implementation
-    private readonly List<Product> _products = new()
+    private readonly HttpClient _httpClient;
+    private readonly string _baseUrl;
+    private readonly JsonSerializerOptions _jsonOptions;
+
+    public ApiProductService()
     {
-        new Product
+        _httpClient = new HttpClient();
+        _jsonOptions = new JsonSerializerOptions
         {
-            Id = 101,
-            Name = "Pro Camera",
-            Description = "Professional-grade camera with advanced lens and features.",
-            Price = 1299.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = true
-        },
-        new Product
-        {
-            Id = 102,
-            Name = "Gaming Console",
-            Description = "Next-generation gaming console with immersive experience.",
-            Price = 499.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = true
-        },
-        new Product
-        {
-            Id = 103,
-            Name = "Smart Speaker",
-            Description = "Voice-controlled smart speaker with premium sound quality.",
-            Price = 179.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = true
-        },
-        new Product
-        {
-            Id = 104,
-            Name = "Drone",
-            Description = "Advanced aerial drone with 4K camera and long flight time.",
-            Price = 799.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = false
-        },
-        new Product
-        {
-            Id = 105,
-            Name = "Electric Scooter",
-            Description = "Foldable electric scooter for convenient urban commuting.",
-            Price = 399.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = true
-        }
-    };
+            PropertyNameCaseInsensitive = true
+        };
+
+        // Get the device-specific base URL
+        _baseUrl = GetApiUrl();
+        
+        // For debugging
+        Debug.WriteLine($"API Service initialized with URL: {_baseUrl}");
+    }
+
+    private string GetApiUrl()
+    {
+        // Default API URL (works for local debugging on Windows/Mac)
+        string apiUrl = "http://localhost:5000/api/products";
+
+#if ANDROID
+        // When running on Android Emulator, localhost refers to the emulator's own loopback interface
+        // 10.0.2.2 is a special alias to the host's localhost
+        apiUrl = "http://10.0.2.2:5000/api/products";
+#elif IOS
+        // For iOS simulators, we can use a special localhost alias
+        apiUrl = "http://localhost:5000/api/products";
+#endif
+
+        return apiUrl;
+    }
 
     /// <inheritdoc />
     public List<Product> GetAllProducts()
     {
-        // In a real implementation, this would make an HTTP request
-        // For demo, we'll just return our mock data with a simulated delay
-        Thread.Sleep(300); // Simulate network delay
-        return _products;
+        try
+        {
+            // Convert to async/await pattern
+            var task = Task.Run(async () => await GetAllProductsAsync());
+            return task.Result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in GetAllProducts: {ex.Message}");
+            return new List<Product>();
+        }
+    }
+    
+    private async Task<List<Product>> GetAllProductsAsync()
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync(_baseUrl);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var products = await response.Content.ReadFromJsonAsync<List<Product>>(_jsonOptions);
+                return products ?? new List<Product>();
+            }
+            
+            Debug.WriteLine($"Failed to get products: {response.StatusCode}");
+            return new List<Product>();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception getting products: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
+            return new List<Product>();
+        }
     }
 
     /// <inheritdoc />
     public Product? GetProductById(int id)
     {
-        // In a real implementation, this would make an HTTP request
-        // For demo, we'll just return from our mock data with a simulated delay
-        Thread.Sleep(150); // Simulate network delay
-        return _products.FirstOrDefault(p => p.Id == id);
+        try
+        {
+            var task = Task.Run(async () => await GetProductByIdAsync(id));
+            return task.Result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in GetProductById: {ex.Message}");
+            return null;
+        }
+    }
+    
+    private async Task<Product?> GetProductByIdAsync(int id)
+    {
+        try
+        {
+            var response = await _httpClient.GetAsync($"{_baseUrl}/{id}");
+            
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadFromJsonAsync<Product>(_jsonOptions);
+            }
+            
+            Debug.WriteLine($"Failed to get product {id}: {response.StatusCode}");
+            return null;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception getting product {id}: {ex.Message}");
+            return null;
+        }
     }
     
     /// <inheritdoc />
     public Product AddProduct(Product product)
     {
-        // In a real implementation, this would make an HTTP POST request
-        // Simulate network delay
-        Thread.Sleep(500);
-        
-        // Generate a new ID starting from 100 to differentiate from the other service
-        int newId = _products.Count > 0 ? _products.Max(p => p.Id) + 1 : 100;
-        
-        // Set the new ID
-        product.Id = newId;
-        
-        // Add to our collection
-        _products.Add(product);
-        
-        return product;
+        try
+        {
+            var task = Task.Run(async () => await AddProductAsync(product));
+            return task.Result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in AddProduct: {ex.Message}");
+            return product;
+        }
+    }
+    
+    private async Task<Product> AddProductAsync(Product product)
+    {
+        try
+        {
+            var response = await _httpClient.PostAsJsonAsync(_baseUrl, product);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                var createdProduct = await response.Content.ReadFromJsonAsync<Product>(_jsonOptions);
+                return createdProduct ?? product;
+            }
+            
+            Debug.WriteLine($"Failed to add product: {response.StatusCode}");
+            var content = await response.Content.ReadAsStringAsync();
+            Debug.WriteLine($"Response content: {content}");
+            return product;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception adding product: {ex.Message}");
+            return product;
+        }
+    }
+
+    /// <inheritdoc />
+    public bool DeleteProduct(int id)
+    {
+        try
+        {
+            var task = Task.Run(async () => await DeleteProductAsync(id));
+            return task.Result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception in DeleteProduct: {ex.Message}");
+            return false;
+        }
+    }
+    
+    private async Task<bool> DeleteProductAsync(int id)
+    {
+        try
+        {
+            var response = await _httpClient.DeleteAsync($"{_baseUrl}/{id}");
+            
+            // For successful delete, API returns 204 No Content
+            return response.IsSuccessStatusCode;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Exception deleting product {id}: {ex.Message}");
+            return false;
+        }
     }
 } 
