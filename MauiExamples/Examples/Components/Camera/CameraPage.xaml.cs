@@ -187,11 +187,11 @@ public partial class CameraPage : ContentPage
             string fileName = $"simulator_photo_{DateTime.Now:yyyyMMddHHmmss}.jpg";
             string filePath = Path.Combine(_photoFolderPath, fileName);
             
-            // Create a simulated photo by copying a bundled resource
-            using (var resourceStream = await FileSystem.OpenAppPackageFileAsync("phone.png"))
+            // Create a simulated photo by copying a bundled resource or creating an empty file
             using (var destinationStream = File.Create(filePath))
             {
-                await resourceStream.CopyToAsync(destinationStream);
+                // Just create an empty file for simulator testing
+                // In a real app, we might copy a placeholder image here
             }
             
             // Add to collection

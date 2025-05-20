@@ -268,3 +268,4 @@ paket-files/
 
 # Benchmarkdot
 BenchmarkDotNet.Artifacts/
+testresults/
