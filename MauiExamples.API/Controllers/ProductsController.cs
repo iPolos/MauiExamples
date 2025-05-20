@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MauiExamples.API.Models;
+using MauiExamples.API.Repositories;
 
 namespace MauiExamples.API.Controllers;
 
@@ -11,65 +12,17 @@ namespace MauiExamples.API.Controllers;
 [Produces("application/json")]
 public class ProductsController : ControllerBase
 {
-    // For demo purposes, we'll use an in-memory list
-    // In a real application, this would come from a database
-    private static readonly List<Product> _products = new()
-    {
-        new Product
-        {
-            Id = 101,
-            Name = "Pro Camera",
-            Description = "Professional-grade camera with advanced lens and features.",
-            Price = 1299.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = true
-        },
-        new Product
-        {
-            Id = 102,
-            Name = "Gaming Console",
-            Description = "Next-generation gaming console with immersive experience.",
-            Price = 499.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = true
-        },
-        new Product
-        {
-            Id = 103,
-            Name = "Smart Speaker",
-            Description = "Voice-controlled smart speaker with premium sound quality.",
-            Price = 179.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = true
-        },
-        new Product
-        {
-            Id = 104,
-            Name = "Drone",
-            Description = "Advanced aerial drone with 4K camera and long flight time.",
-            Price = 799.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = false
-        },
-        new Product
-        {
-            Id = 105,
-            Name = "Electric Scooter",
-            Description = "Foldable electric scooter for convenient urban commuting.",
-            Price = 399.99m,
-            ImageUrl = "dotnet_bot.png",
-            InStock = true
-        }
-    };
-
+    private readonly IProductRepository _productRepository;
     private readonly ILogger<ProductsController> _logger;
 
     /// <summary>
     /// Constructor for the ProductsController
     /// </summary>
+    /// <param name="productRepository">Product repository</param>
     /// <param name="logger">Logger instance injected by DI</param>
-    public ProductsController(ILogger<ProductsController> logger)
+    public ProductsController(IProductRepository productRepository, ILogger<ProductsController> logger)
     {
+        _productRepository = productRepository;
         _logger = logger;
     }
 
@@ -80,10 +33,11 @@ public class ProductsController : ControllerBase
     /// <response code="200">Returns the list of products</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult<IEnumerable<Product>> GetProducts()
+    public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
     {
         _logger.LogInformation("Getting all products");
-        return Ok(_products);
+        var products = await _productRepository.GetAllProductsAsync();
+        return Ok(products);
     }
 
     /// <summary>
@@ -96,10 +50,10 @@ public class ProductsController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public ActionResult<Product> GetProduct(int id)
+    public async Task<ActionResult<Product>> GetProduct(int id)
     {
         _logger.LogInformation("Getting product with ID: {Id}", id);
-        var product = _products.FirstOrDefault(p => p.Id == id);
+        var product = await _productRepository.GetProductByIdAsync(id);
 
         if (product == null)
         {
@@ -120,21 +74,64 @@ public class ProductsController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public ActionResult<Product> CreateProduct(Product product)
+    public async Task<ActionResult<Product>> CreateProduct(Product product)
     {
         if (product == null)
         {
             return BadRequest("Product data is null");
         }
 
-        // Generate a new ID
-        int newId = _products.Count > 0 ? _products.Max(p => p.Id) + 1 : 100;
-        product.Id = newId;
+        try
+        {
+            var createdProduct = await _productRepository.AddProductAsync(product);
+            _logger.LogInformation("Created new product with ID: {Id}", createdProduct.Id);
 
-        _products.Add(product);
-        _logger.LogInformation("Created new product with ID: {Id}", product.Id);
+            return CreatedAtAction(nameof(GetProduct), new { id = createdProduct.Id }, createdProduct);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error creating product");
+            return BadRequest($"Error creating product: {ex.Message}");
+        }
+    }
 
-        return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, product);
+    /// <summary>
+    /// Updates an existing product
+    /// </summary>
+    /// <param name="id">The ID of the product to update</param>
+    /// <param name="product">The updated product data</param>
+    /// <returns>No content if successful</returns>
+    /// <response code="204">If the product was successfully updated</response>
+    /// <response code="400">If the product data is invalid</response>
+    /// <response code="404">If the product to update is not found</response>
+    [HttpPut("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateProduct(int id, Product product)
+    {
+        if (id != product.Id)
+        {
+            return BadRequest("ID in URL does not match ID in product data");
+        }
+
+        try
+        {
+            var success = await _productRepository.UpdateProductAsync(product);
+            if (!success)
+            {
+                _logger.LogWarning("Cannot update - product with ID: {Id} not found", id);
+                return NotFound();
+            }
+            
+            _logger.LogInformation("Updated product with ID: {Id}", id);
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error updating product with ID {Id}", id);
+            return BadRequest($"Error updating product: {ex.Message}");
+        }
     }
 
     /// <summary>
@@ -147,18 +144,16 @@ public class ProductsController : ControllerBase
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public IActionResult DeleteProduct(int id)
+    public async Task<IActionResult> DeleteProduct(int id)
     {
-        var product = _products.FirstOrDefault(p => p.Id == id);
-        if (product == null)
+        var success = await _productRepository.DeleteProductAsync(id);
+        if (!success)
         {
             _logger.LogWarning("Cannot delete - product with ID: {Id} not found", id);
             return NotFound();
         }
-
-        _products.Remove(product);
+        
         _logger.LogInformation("Deleted product with ID: {Id}", id);
-
         return NoContent();
     }
 } 

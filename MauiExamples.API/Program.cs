@@ -1,6 +1,16 @@
+using Microsoft.EntityFrameworkCore;
+using MauiExamples.API.Data;
+using MauiExamples.API.Repositories;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=products.db";
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(connectionString));
+
+// Register repositories
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 builder.Services.AddControllers();
 
@@ -52,6 +62,13 @@ if (app.Environment.IsDevelopment())
         c.EnableFilter();
         c.DefaultModelsExpandDepth(1);
     });
+    
+    // Create and migrate the database during development
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        dbContext.Database.EnsureCreated();
+    }
 }
 
 app.UseHttpsRedirection();

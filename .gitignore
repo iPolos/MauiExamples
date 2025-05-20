@@ -269,3 +269,8 @@ paket-files/
 # Benchmarkdot
 BenchmarkDotNet.Artifacts/
 testresults/
+
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
