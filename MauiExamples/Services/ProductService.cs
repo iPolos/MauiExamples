@@ -82,4 +82,16 @@ public class ProductService : IProductService
         
         return product;
     }
+
+    /// <inheritdoc />
+    public bool DeleteProduct(int id)
+    {
+        var product = _products.FirstOrDefault(p => p.Id == id);
+        if (product == null)
+        {
+            return false;
+        }
+        
+        return _products.Remove(product);
+    }
 } 

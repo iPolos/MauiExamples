@@ -1,0 +1,20 @@
+### Get all products
+GET https://localhost:5001/api/products
+
+### Get product by id
+GET https://localhost:5001/api/products/101
+
+### Create new product
+POST https://localhost:5001/api/products
+Content-Type: application/json
+
+{
+  "name": "Test Product",
+  "description": "This is a test product created via the API",
+  "price": 99.99,
+  "imageUrl": "dotnet_bot.png",
+  "inStock": true
+}
+
+### Delete product
+DELETE https://localhost:5001/api/products/101 

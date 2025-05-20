@@ -27,4 +27,11 @@ public interface IProductService
     /// <param name="product">The product to add</param>
     /// <returns>The added product with its assigned ID</returns>
     Product AddProduct(Product product);
+    
+    /// <summary>
+    /// Delete a product by ID
+    /// </summary>
+    /// <param name="id">The product ID to delete</param>
+    /// <returns>True if successful, false otherwise</returns>
+    bool DeleteProduct(int id);
 } 
