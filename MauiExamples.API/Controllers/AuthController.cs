@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MauiExamples.API.Models;
 using MauiExamples.API.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MauiExamples.API.Controllers;
 
