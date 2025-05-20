@@ -4,6 +4,10 @@
 		<!-- Add your Google Maps API key here when you have it -->
 		<meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR_API_KEY_HERE" />
 		<meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version" />
+		
+		<!-- Add notification icon for Android -->
+		<meta-data android:name="com.google.firebase.messaging.default_notification_icon" 
+			android:resource="@drawable/notification_icon" />
 	</application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
@@ -13,6 +17,12 @@
 	<!-- Location permissions -->
 	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	
+	<!-- Required notification permissions -->
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	
 	<!-- Required for Android 11 (API level 30) and higher -->
 	<queries>
 		<intent>

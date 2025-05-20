@@ -36,7 +36,17 @@ public partial class LocalNotificationPage : ContentPage
                 NotificationId = 100,
                 Title = title,
                 Description = message,
-                ReturningData = "Basic notification data"
+                ReturningData = "Basic notification data",
+                Android = new AndroidOptions
+                {
+                    ChannelId = "general_notifications",
+                    ChannelName = "General Notifications",
+                    Priority = AndroidPriority.High,
+                    IconSmallName = "notification_icon",
+                    Color = Android.Graphics.Color.Blue,
+                    AutoCancel = true,
+                    Ongoing = false
+                }
             };
             
             await LocalNotificationCenter.Current.Show(notification);
@@ -70,7 +80,16 @@ public partial class LocalNotificationPage : ContentPage
                 {
                     NotifyTime = DateTime.Now.AddSeconds(seconds)
                 },
-                ReturningData = "Scheduled notification data"
+                ReturningData = "Scheduled notification data",
+                Android = new AndroidOptions
+                {
+                    ChannelId = "scheduled_notifications",
+                    ChannelName = "Scheduled Notifications",
+                    Priority = AndroidPriority.High,
+                    IconSmallName = "notification_icon",
+                    Color = Android.Graphics.Color.Red,
+                    AutoCancel = true
+                }
             };
             
             await LocalNotificationCenter.Current.Show(notification);
