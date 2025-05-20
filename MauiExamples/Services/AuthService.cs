@@ -101,6 +101,23 @@ public class AuthService
                 
                 if (authResponse != null)
                 {
+                    Debug.WriteLine("Login successful");
+                    Debug.WriteLine($"Username: {authResponse.Username}");
+                    Debug.WriteLine($"Role: {authResponse.Role}");
+                    
+                    if (string.IsNullOrEmpty(authResponse.Token))
+                    {
+                        Debug.WriteLine("WARNING: Received token is null or empty!");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Token preview: {authResponse.Token.Substring(0, Math.Min(15, authResponse.Token.Length))}...");
+                        Debug.WriteLine($"Token length: {authResponse.Token.Length} characters");
+                    }
+                    
+                    var expiration = DateTimeOffset.FromUnixTimeSeconds(authResponse.Expiration);
+                    Debug.WriteLine($"Token expires: {expiration} (UTC)");
+                    
                     // Save the authentication response
                     _currentAuth = authResponse;
                     
@@ -207,10 +224,38 @@ public class AuthService
     /// <param name="client">HttpClient to configure</param>
     public void ConfigureHttpClient(HttpClient client)
     {
-        if (_currentAuth != null)
+        // First, remove any existing Authorization header to avoid duplicates
+        if (client.DefaultRequestHeaders.Contains("Authorization"))
+        {
+            client.DefaultRequestHeaders.Remove("Authorization");
+            Debug.WriteLine("Removed existing Authorization header");
+        }
+        
+        if (_currentAuth != null && !string.IsNullOrEmpty(_currentAuth.Token))
         {
             client.DefaultRequestHeaders.Authorization = 
                 new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _currentAuth.Token);
+            
+            Debug.WriteLine($"Added Authorization header with token: Bearer {_currentAuth.Token.Substring(0, 15)}...");
+            Debug.WriteLine($"Token length: {_currentAuth.Token.Length} characters");
+            
+            // Check if token might be malformed
+            if (_currentAuth.Token.Contains(" "))
+            {
+                Debug.WriteLine("WARNING: Token contains spaces which may cause issues!");
+            }
+        }
+        else
+        {
+            Debug.WriteLine("No authentication token available to configure HttpClient");
+            if (_currentAuth == null)
+            {
+                Debug.WriteLine("_currentAuth is null");
+            }
+            else if (string.IsNullOrEmpty(_currentAuth.Token))
+            {
+                Debug.WriteLine("_currentAuth.Token is null or empty");
+            }
         }
     }
     
@@ -247,12 +292,27 @@ public class AuthService
             
             if (!string.IsNullOrEmpty(authJson))
             {
+                Debug.WriteLine("Found saved authentication data");
                 var authResponse = JsonSerializer.Deserialize<AuthResponse>(authJson, _jsonOptions);
                 
                 // Check if the token has expired
                 if (authResponse != null)
                 {
+                    Debug.WriteLine($"Loaded auth for user: {authResponse.Username}, role: {authResponse.Role}");
+                    
+                    if (string.IsNullOrEmpty(authResponse.Token))
+                    {
+                        Debug.WriteLine("WARNING: Loaded token is null or empty!");
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Token preview: {authResponse.Token.Substring(0, Math.Min(15, authResponse.Token.Length))}...");
+                    }
+                    
                     var expiration = DateTimeOffset.FromUnixTimeSeconds(authResponse.Expiration);
+                    Debug.WriteLine($"Token expiration: {expiration} (UTC)");
+                    Debug.WriteLine($"Current time: {DateTimeOffset.UtcNow} (UTC)");
+                    Debug.WriteLine($"Token {(expiration > DateTimeOffset.UtcNow ? "is valid" : "has expired")}");
                     
                     if (expiration > DateTimeOffset.UtcNow)
                     {
@@ -263,16 +323,29 @@ public class AuthService
                     }
                     else
                     {
+                        Debug.WriteLine("Token has expired, clearing it from storage");
                         // Token has expired, clear it
                         SecureStorage.Default.Remove("auth_token");
                         SecureStorage.Default.Remove("auth_data");
                     }
                 }
+                else
+                {
+                    Debug.WriteLine("Failed to deserialize saved auth data");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No saved authentication data found");
             }
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Error loading authentication: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
         }
     }
 } 

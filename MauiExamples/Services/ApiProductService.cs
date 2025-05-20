@@ -168,6 +168,16 @@ public class ApiProductService : IProductService
                 Debug.WriteLine("Re-applied auth token before product add");
             }
             
+            // Log the current authorization header
+            if (_httpClient.DefaultRequestHeaders.Authorization != null)
+            {
+                Debug.WriteLine($"Authorization header: {_httpClient.DefaultRequestHeaders.Authorization.Scheme} {_httpClient.DefaultRequestHeaders.Authorization.Parameter}");
+            }
+            else
+            {
+                Debug.WriteLine("WARNING: No Authorization header present in the request!");
+            }
+            
             var response = await _httpClient.PostAsJsonAsync(_baseUrl, product);
             
             if (response.IsSuccessStatusCode)
