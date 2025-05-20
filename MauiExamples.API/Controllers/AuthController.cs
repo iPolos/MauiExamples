@@ -85,4 +85,26 @@ public class AuthController : ControllerBase
         _logger.LogInformation("Registration successful for user: {Username}", request.Username);
         return Ok(new { message = "Registration successful" });
     }
+    
+    /// <summary>
+    /// Test endpoint to verify authentication and role
+    /// </summary>
+    /// <returns>User information from the token</returns>
+    [HttpGet("verify")]
+    [Authorize]
+    public IActionResult VerifyAuth()
+    {
+        var username = User.Identity?.Name;
+        var claims = User.Claims.Select(c => new { Type = c.Type, Value = c.Value }).ToList();
+        var isAdmin = User.IsInRole("Admin");
+        
+        _logger.LogInformation("Auth verification for user: {Username}, IsAdmin: {IsAdmin}", username, isAdmin);
+        
+        return Ok(new 
+        { 
+            Username = username,
+            IsAdmin = isAdmin,
+            Claims = claims
+        });
+    }
 } 

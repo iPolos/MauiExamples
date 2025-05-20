@@ -118,8 +118,12 @@ public class AuthService
             Expires = DateTime.UtcNow.AddHours(3),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
-                SecurityAlgorithms.HmacSha256Signature)
+                SecurityAlgorithms.HmacSha256Signature),
+            Issuer = _configuration["Jwt:Issuer"],
+            Audience = _configuration["Jwt:Audience"]
         };
+        
+        Console.WriteLine($"Creating token for user {user.Username} with role {user.Role}");
         
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);

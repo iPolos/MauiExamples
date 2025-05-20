@@ -23,8 +23,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     {
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = true,
-            ValidateAudience = true,
+            ValidateIssuer = false,
+            ValidateAudience = false,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
@@ -32,6 +32,26 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? 
                                        "YourSecureJwtSigningKey_MustBeAtLeast32BytesLong!"))
+        };
+
+        // Enable debug output for token validation errors
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine($"Authentication failed: {context.Exception.Message}");
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine($"Token validated successfully for {context.Principal?.Identity?.Name}");
+                return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                Console.WriteLine($"Challenge issued: {context.Error}, {context.ErrorDescription}");
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -129,6 +149,26 @@ app.UseHttpsRedirection();
 
 // Use CORS
 app.UseCors("AllowMauiApp");
+
+// Add debug middleware for auth diagnostics
+app.Use(async (context, next) =>
+{
+    // Log all requests with auth headers
+    if (context.Request.Headers.ContainsKey("Authorization"))
+    {
+        var authHeader = context.Request.Headers["Authorization"].ToString();
+        Console.WriteLine($"Request to {context.Request.Path} with Authorization: {authHeader}");
+    }
+    else
+    {
+        Console.WriteLine($"Request to {context.Request.Path} without Authorization header");
+    }
+    
+    await next();
+    
+    // Log response status codes
+    Console.WriteLine($"Response status: {context.Response.StatusCode} for {context.Request.Path}");
+});
 
 // Use Authentication and Authorization
 app.UseAuthentication();
