@@ -1,4 +1,6 @@
+using Microsoft.Maui.Controls.PlatformConfiguration;
 using Plugin.LocalNotification;
+using Plugin.LocalNotification.AndroidOption;
 
 namespace MauiExamples.Examples.Components.LocalNotifications;
 
