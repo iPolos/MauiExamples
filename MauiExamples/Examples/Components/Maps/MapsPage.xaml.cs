@@ -13,6 +13,7 @@ public partial class MapsPage : ContentPage
     private readonly Location _londonLocation = new(51.5074, -0.1278);    // London
     private readonly Location _tokyoLocation = new(35.6762, 139.6503);    // Tokyo
     private readonly Location _sydneyLocation = new(-33.8688, 151.2093);  // Sydney
+    private readonly Location _avansLocation = new(51.5836, 4.7971);  // Sydney
 
     // Default map span (zoom level)
     private readonly double _defaultMapSpanInKm = 5.0;
@@ -40,10 +41,10 @@ public partial class MapsPage : ContentPage
         try
         {
             // Initialize maps with default view (Seattle)
-            InitializeMap(BasicMap, _seattleLocation);
-            InitializeMap(LocationMap, _seattleLocation);
-            InitializeMap(PinsMap, _seattleLocation);
-            InitializeMap(GeocodingMap, _seattleLocation);
+            InitializeMap(BasicMap, _avansLocation);
+            InitializeMap(LocationMap, _avansLocation);
+            InitializeMap(PinsMap, _avansLocation);
+            InitializeMap(GeocodingMap, _avansLocation);
             
             // Add demo pins to the pins map
             AddDemoPins();
@@ -103,6 +104,7 @@ public partial class MapsPage : ContentPage
             AddPin(PinsMap, "London", "The Big Smoke", _londonLocation);
             AddPin(PinsMap, "Tokyo", "The Eastern Capital", _tokyoLocation);
             AddPin(PinsMap, "Sydney", "The Harbour City", _sydneyLocation);
+            AddPin(PinsMap, "Avans", "Avans Hogeschool", _avansLocation);
         }
         catch (Exception ex)
         {
