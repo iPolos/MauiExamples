@@ -187,11 +187,44 @@ public partial class CameraPage : ContentPage
             string fileName = $"simulator_photo_{DateTime.Now:yyyyMMddHHmmss}.jpg";
             string filePath = Path.Combine(_photoFolderPath, fileName);
             
-            // Create a simulated photo by copying a bundled resource or creating an empty file
+            // Create a simulated photo using a bundled image
+            // First try to copy an existing image from the app's resources
+            var assembly = GetType().Assembly;
             using (var destinationStream = File.Create(filePath))
             {
-                // Just create an empty file for simulator testing
-                // In a real app, we might copy a placeholder image here
+                try 
+                {
+                    // Try to use the phone.png image from the app resources
+                    using (var sourceStream = await FileSystem.OpenAppPackageFileAsync("phone.png"))
+                    {
+                        await sourceStream.CopyToAsync(destinationStream);
+                    }
+                }
+                catch 
+                {
+                    try 
+                    {
+                        // Fallback to dotnet_bot.png if phone.png isn't available
+                        using (var sourceStream = await FileSystem.OpenAppPackageFileAsync("dotnet_bot.png"))
+                        {
+                            await sourceStream.CopyToAsync(destinationStream);
+                        }
+                    }
+                    catch 
+                    {
+                        // If all else fails, create a colored square as a placeholder
+                        // Creating a simple colored square bitmap (100x100 pixels) in memory
+                        byte[] buffer = new byte[100 * 100 * 3]; // RGB format, 3 bytes per pixel
+                        for (int i = 0; i < buffer.Length; i += 3)
+                        {
+                            // Set RGB values for a blue color
+                            buffer[i] = 0;     // R
+                            buffer[i + 1] = 0; // G
+                            buffer[i + 2] = 255; // B
+                        }
+                        await destinationStream.WriteAsync(buffer, 0, buffer.Length);
+                    }
+                }
             }
             
             // Add to collection
@@ -203,7 +236,7 @@ public partial class CameraPage : ContentPage
             
             _photos.Insert(0, photoItem);
             
-            await DisplayAlert("Simulator", "Using simulated photo in iOS simulator (camera not available in simulator)", "OK");
+            await DisplayAlert("Simulator", "Using a placeholder image in iOS simulator (camera not available in simulator)", "OK");
         }
         catch (Exception ex)
         {
