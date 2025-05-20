@@ -31,7 +31,7 @@ public class ApiProductService : IProductService
         _authService.ConfigureHttpClient(_httpClient);
         
         // Subscribe to auth changes to update the HTTP client
-        _authService.AuthenticationChanged += (_, _) => _authService.ConfigureHttpClient(_httpClient);
+        _authService.AuthenticationChanged += OnAuthenticationChanged;
 
         // Get the device-specific base URL
         _baseUrl = GetApiUrl();
@@ -161,6 +161,13 @@ public class ApiProductService : IProductService
     {
         try
         {
+            // Ensure we have the most up-to-date token
+            if (_httpClient.DefaultRequestHeaders.Authorization == null && _authService.IsAuthenticated)
+            {
+                _authService.ConfigureHttpClient(_httpClient);
+                Debug.WriteLine("Re-applied auth token before product add");
+            }
+            
             var response = await _httpClient.PostAsJsonAsync(_baseUrl, product);
             
             if (response.IsSuccessStatusCode)
@@ -172,11 +179,25 @@ public class ApiProductService : IProductService
             Debug.WriteLine($"Failed to add product: {response.StatusCode}");
             var content = await response.Content.ReadAsStringAsync();
             Debug.WriteLine($"Response content: {content}");
+            
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                Debug.WriteLine("Unauthorized error. Current auth state:");
+                Debug.WriteLine($"IsAuthenticated: {_authService.IsAuthenticated}");
+                Debug.WriteLine($"Username: {_authService.CurrentUsername}");
+                Debug.WriteLine($"Role: {_authService.CurrentRole}");
+                Debug.WriteLine($"Token present: {!string.IsNullOrEmpty(_authService.AuthToken)}");
+            }
+            
             return product;
         }
         catch (Exception ex)
         {
             Debug.WriteLine($"Exception adding product: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Debug.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
             return product;
         }
     }
@@ -233,18 +254,39 @@ public class ApiProductService : IProductService
         // Check if user is authenticated
         if (!_authService.IsAuthenticated)
         {
-            Debug.WriteLine("User not authenticated");
+            Debug.WriteLine("User not authenticated - admin action denied");
             return false;
         }
+        
+        // Log the current authentication details
+        Debug.WriteLine($"User authentication details: Username='{_authService.CurrentUsername}', Role='{_authService.CurrentRole}'");
         
         // Check if user has admin role
         var isAdmin = _authService.CurrentRole.Equals("Admin", StringComparison.OrdinalIgnoreCase);
         
         if (!isAdmin)
         {
-            Debug.WriteLine($"User role '{_authService.CurrentRole}' is not Admin");
+            Debug.WriteLine($"User role '{_authService.CurrentRole}' is not Admin - admin action denied");
+        }
+        else
+        {
+            Debug.WriteLine("User is authorized as Admin");
         }
         
         return isAdmin;
+    }
+
+    // Handle authentication changes to ensure the token is always current
+    private void OnAuthenticationChanged(object sender, EventArgs e)
+    {
+        // Clear any existing auth headers
+        if (_httpClient.DefaultRequestHeaders.Authorization != null)
+        {
+            _httpClient.DefaultRequestHeaders.Remove("Authorization");
+        }
+        
+        // Add the updated auth token
+        _authService.ConfigureHttpClient(_httpClient);
+        Debug.WriteLine("Updated API Service auth token after authentication change");
     }
 } 
