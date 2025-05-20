@@ -1,4 +1,6 @@
-﻿namespace MauiExamples;
+﻿using MauiExamples.Views;
+
+namespace MauiExamples;
 
 public partial class AppShell : Shell
 {
@@ -7,6 +9,11 @@ public partial class AppShell : Shell
         InitializeComponent();
         
         // Register routes for navigation
+        // Auth pages
+        Routing.RegisterRoute("login", typeof(LoginPage));
+        Routing.RegisterRoute("register", typeof(RegisterPage));
+        
+        // Product pages by pattern
         Routing.RegisterRoute("examples/standard/products", typeof(Examples.Standard.ProductsPage));
         Routing.RegisterRoute("examples/standard/details", typeof(Examples.Standard.ProductDetailPage));
         

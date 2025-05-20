@@ -4,57 +4,98 @@
              x:Class="MauiExamples.MainPage"
              AutomationId="MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Padding="30"
-            Spacing="25">
-            <Image
-                Source="dotnet_bot.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="The .NET Bot"
-                AutomationId="MainImage" />
+    <Grid RowDefinitions="Auto,*">
+        <!-- Authentication status bar -->
+        <Grid Grid.Row="0" 
+              ColumnDefinitions="Auto,*,Auto" 
+              BackgroundColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}"
+              Padding="10">
+            <Label x:Name="AuthStatusLabel" 
+                   Grid.Column="0"
+                   Text="Not logged in" 
+                   TextColor="White"
+                   VerticalOptions="Center"
+                   Margin="5,0,0,0" />
+            
+            <Button x:Name="LoginButton"
+                    Grid.Column="2"
+                    Text="Login"
+                    Clicked="OnLoginButtonClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    BorderColor="White"
+                    BorderWidth="1"
+                    Margin="0,0,5,0"
+                    HeightRequest="40"
+                    AutomationId="HeaderLoginButton" />
+                    
+            <Button x:Name="LogoutButton"
+                    Grid.Column="2"
+                    Text="Logout"
+                    Clicked="OnLogoutButtonClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="White"
+                    BorderColor="White"
+                    BorderWidth="1"
+                    Margin="0,0,5,0"
+                    HeightRequest="40"
+                    IsVisible="False"
+                    AutomationId="HeaderLogoutButton" />
+        </Grid>
+        
+        <!-- Main content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout
+                Padding="30"
+                Spacing="25">
+                <Image
+                    Source="dotnet_bot.png"
+                    HeightRequest="185"
+                    Aspect="AspectFit"
+                    SemanticProperties.Description="The .NET Bot"
+                    AutomationId="MainImage" />
 
-            <Label
-                Text="MVVM Examples"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1"
-                AutomationId="PageTitle" />
+                <Label
+                    Text="MVVM Examples"
+                    Style="{StaticResource Headline}"
+                    SemanticProperties.HeadingLevel="Level1"
+                    AutomationId="PageTitle" />
 
-            <Label
-                Text="Different implementations of MVVM in .NET MAUI"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                AutomationId="PageSubtitle" />
+                <Label
+                    Text="Different implementations of MVVM in .NET MAUI"
+                    Style="{StaticResource SubHeadline}"
+                    SemanticProperties.HeadingLevel="Level2"
+                    AutomationId="PageSubtitle" />
 
-            <Button
-                x:Name="StandardButton"
-                Text="Standard XAML with Code-Behind" 
-                Clicked="OnStandardButtonClicked"
-                HorizontalOptions="Fill"
-                AutomationId="StandardButton" />
-                
-            <Button
-                x:Name="VanillaMvvmButton"
-                Text="Vanilla MVVM Implementation" 
-                Clicked="OnVanillaMvvmButtonClicked"
-                HorizontalOptions="Fill"
-                AutomationId="VanillaMvvmButton" />
-                
-            <Button
-                x:Name="MvvmToolkitButton"
-                Text="MVVM Toolkit Implementation" 
-                Clicked="OnMvvmToolkitButtonClicked"
-                HorizontalOptions="Fill"
-                AutomationId="MvvmToolkitButton" />
-                
-            <Button
-                x:Name="ComponentsButton"
-                Text="Components" 
-                Clicked="OnComponentsButtonClicked"
-                HorizontalOptions="Fill"
-                AutomationId="ComponentsButton" />
-        </VerticalStackLayout>
-    </ScrollView>
+                <Button
+                    x:Name="StandardButton"
+                    Text="Standard XAML with Code-Behind" 
+                    Clicked="OnStandardButtonClicked"
+                    HorizontalOptions="Fill"
+                    AutomationId="StandardButton" />
+                    
+                <Button
+                    x:Name="VanillaMvvmButton"
+                    Text="Vanilla MVVM Implementation" 
+                    Clicked="OnVanillaMvvmButtonClicked"
+                    HorizontalOptions="Fill"
+                    AutomationId="VanillaMvvmButton" />
+                    
+                <Button
+                    x:Name="MvvmToolkitButton"
+                    Text="MVVM Toolkit Implementation" 
+                    Clicked="OnMvvmToolkitButtonClicked"
+                    HorizontalOptions="Fill"
+                    AutomationId="MvvmToolkitButton" />
+                    
+                <Button
+                    x:Name="ComponentsButton"
+                    Text="Components" 
+                    Clicked="OnComponentsButtonClicked"
+                    HorizontalOptions="Fill"
+                    AutomationId="ComponentsButton" />
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 
 </ContentPage>

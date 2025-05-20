@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using MauiExamples.Services;
+using MauiExamples.Views;
 using CommunityToolkit.Maui;
 using Plugin.LocalNotification;
 using Microsoft.Maui.Controls.Maps;
@@ -23,13 +24,22 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
             
+        // Register authentication service first
+        builder.Services.AddSingleton<AuthService>();
+            
         // Register services
-        // Default implementation
-        builder.Services.AddSingleton<IProductService, ApiProductService>();
+        // Default implementation - use factory to inject AuthService
+        builder.Services.AddSingleton<IProductService>(sp => 
+            new ApiProductService(sp.GetRequiredService<AuthService>()));
         
         // Register the concrete types as well for direct injection when needed
-        builder.Services.AddSingleton<ApiProductService>();
+        builder.Services.AddSingleton<ApiProductService>(sp => 
+            new ApiProductService(sp.GetRequiredService<AuthService>()));
 
+        // Register auth pages
+        builder.Services.AddTransient<LoginPage>();
+        builder.Services.AddTransient<RegisterPage>();
+        
         // Register ViewModels
         // Vanilla MVVM ViewModels
         builder.Services.AddTransient<MauiExamples.Examples.VanillaMvvm.ViewModels.ProductsViewModel>();

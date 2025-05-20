@@ -15,14 +15,23 @@ public class ApiProductService : IProductService
     private readonly HttpClient _httpClient;
     private readonly string _baseUrl;
     private readonly JsonSerializerOptions _jsonOptions;
+    private readonly AuthService _authService;
 
-    public ApiProductService()
+    public ApiProductService(AuthService authService)
     {
         _httpClient = new HttpClient();
         _jsonOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true
         };
+
+        _authService = authService;
+        
+        // Add authentication token if available
+        _authService.ConfigureHttpClient(_httpClient);
+        
+        // Subscribe to auth changes to update the HTTP client
+        _authService.AuthenticationChanged += (_, _) => _authService.ConfigureHttpClient(_httpClient);
 
         // Get the device-specific base URL
         _baseUrl = GetApiUrl();
@@ -34,15 +43,15 @@ public class ApiProductService : IProductService
     private string GetApiUrl()
     {
         // Default API URL (works for local debugging on Windows/Mac)
-        string apiUrl = "http://localhost:5000/api/products";
+        string apiUrl = "http://localhost:5001/api/products";
 
 #if ANDROID
         // When running on Android Emulator, localhost refers to the emulator's own loopback interface
         // 10.0.2.2 is a special alias to the host's localhost
-        apiUrl = "http://10.0.2.2:5000/api/products";
+        apiUrl = "http://10.0.2.2:5001/api/products";
 #elif IOS
         // For iOS simulators, we can use a special localhost alias
-        apiUrl = "http://localhost:5000/api/products";
+        apiUrl = "http://localhost:5001/api/products";
 #endif
 
         return apiUrl;
@@ -131,6 +140,13 @@ public class ApiProductService : IProductService
     {
         try
         {
+            // Check if authenticated as admin user
+            if (!IsAuthorizedForAdminActions())
+            {
+                Debug.WriteLine("User not authorized to add products. Need admin role.");
+                return product;
+            }
+            
             var task = Task.Run(async () => await AddProductAsync(product));
             return task.Result;
         }
@@ -170,6 +186,13 @@ public class ApiProductService : IProductService
     {
         try
         {
+            // Check if authenticated as admin user
+            if (!IsAuthorizedForAdminActions())
+            {
+                Debug.WriteLine("User not authorized to delete products. Need admin role.");
+                return false;
+            }
+            
             var task = Task.Run(async () => await DeleteProductAsync(id));
             return task.Result;
         }
@@ -186,6 +209,12 @@ public class ApiProductService : IProductService
         {
             var response = await _httpClient.DeleteAsync($"{_baseUrl}/{id}");
             
+            if (!response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                Debug.WriteLine($"Failed to delete product {id}: {response.StatusCode}, {content}");
+            }
+            
             // For successful delete, API returns 204 No Content
             return response.IsSuccessStatusCode;
         }
@@ -194,5 +223,28 @@ public class ApiProductService : IProductService
             Debug.WriteLine($"Exception deleting product {id}: {ex.Message}");
             return false;
         }
+    }
+    
+    /// <summary>
+    /// Checks if the current user is authorized for admin-only actions
+    /// </summary>
+    private bool IsAuthorizedForAdminActions()
+    {
+        // Check if user is authenticated
+        if (!_authService.IsAuthenticated)
+        {
+            Debug.WriteLine("User not authenticated");
+            return false;
+        }
+        
+        // Check if user has admin role
+        var isAdmin = _authService.CurrentRole.Equals("Admin", StringComparison.OrdinalIgnoreCase);
+        
+        if (!isAdmin)
+        {
+            Debug.WriteLine($"User role '{_authService.CurrentRole}' is not Admin");
+        }
+        
+        return isAdmin;
     }
 } 

@@ -1,12 +1,27 @@
-﻿namespace MauiExamples;
+﻿using MauiExamples.Views;
+using MauiExamples.Services;
+
+namespace MauiExamples;
 
 public partial class App : Application
 {
-    public App()
+    private readonly AuthService _authService;
+    
+    public App(AuthService authService)
     {
         InitializeComponent();
+        _authService = authService;
 
-        // Use AppShell directly without wrapping it in a NavigationPage
-        MainPage = new AppShell();
+        // Set startup page based on authentication status
+        if (_authService.IsAuthenticated)
+        {
+            // User is already authenticated, go directly to main app
+            MainPage = new AppShell();
+        }
+        else
+        {
+            // User needs to log in first
+            MainPage = new NavigationPage(new LoginPage(_authService));
+        }
     }
 }

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiExamples.Views.LoginPage"
+             Title="Login">
+    
+    <ScrollView>
+        <VerticalStackLayout Spacing="20" Padding="25" VerticalOptions="Center">
+            <Image
+                Source="dotnet_bot.png"
+                HeightRequest="160"
+                HorizontalOptions="Center" />
+            
+            <Label
+                Text="MAUI Examples"
+                SemanticProperties.HeadingLevel="Level1"
+                FontSize="32"
+                HorizontalOptions="Center" />
+            
+            <Label
+                Text="Sign in to your account"
+                SemanticProperties.HeadingLevel="Level2"
+                FontSize="18"
+                HorizontalOptions="Center"
+                Margin="0,0,0,20" />
+            
+            <Label
+                x:Name="MessageLabel"
+                Text=""
+                FontSize="14"
+                HorizontalOptions="Center"
+                TextColor="Red"
+                IsVisible="false" />
+                
+            <Entry
+                x:Name="UsernameEntry"
+                Placeholder="Username"
+                HorizontalOptions="Fill"
+                Margin="0,10,0,0"
+                Keyboard="Text"
+                ReturnType="Next" />
+                
+            <Entry
+                x:Name="PasswordEntry"
+                Placeholder="Password"
+                HorizontalOptions="Fill"
+                IsPassword="True"
+                ReturnType="Done" />
+                
+            <Button
+                x:Name="LoginButton"
+                Text="Sign In"
+                Clicked="OnLoginClicked"
+                HorizontalOptions="Fill"
+                Margin="0,15,0,0" />
+                
+            <Button
+                x:Name="RegisterButton"
+                Text="Create Account"
+                Clicked="OnRegisterClicked"
+                HorizontalOptions="Fill"
+                Margin="0,5,0,0"
+                BackgroundColor="Transparent"
+                TextColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource Primary}}"
+                BorderWidth="1" />
+            
+            <Button
+                x:Name="SkipButton"
+                Text="Skip Login"
+                Clicked="OnSkipClicked"
+                HorizontalOptions="Fill"
+                Margin="0,5,0,0"
+                BackgroundColor="Transparent"
+                TextColor="Gray"
+                FontSize="14" />
+                
+            <ActivityIndicator
+                x:Name="LoadingIndicator"
+                IsRunning="False"
+                IsVisible="False"
+                HorizontalOptions="Center"
+                Margin="0,20,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage> 
